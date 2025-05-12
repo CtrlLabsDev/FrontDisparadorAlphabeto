@@ -1,0 +1,20 @@
+.header-campanhas-title {
+    display: flex;
+    justify-content: space-between; /* separa input à esquerda e botão à direita */
+    align-items: center;            /* alinha verticalmente */
+    margin-bottom: 10px;
+}
+
+.header-campanhas-input {
+    flex: 1;                        /* ocupa o espaço disponível */
+    margin-right: 10px;             /* espaço entre input e botão */
+}
+
+.header-campanhas-input .p-inputtext {
+    height: 46px;                   /* altura igual ao botão */
+    font-size: 16px;                /* opcional, ajuste conforme gosto */
+}
+
+.header-campanhas-button {
+    flex-shrink: 0;                 /* impede o botão de encolher */
+}

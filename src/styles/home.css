@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+  color: #1f2937;
+}
+
+.home-wrapper {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 100vh;
+  /* overflow-y: auto; */
+  box-sizing: border-box;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Estilos para o filtro de período */
+.periodo-filter {
+  display: flex;
+  background-color: #f3f4f6;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.periodo-btn {
+  background: none;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.periodo-btn:hover {
+  background-color: rgba(229, 231, 235, 0.5);
+}
+
+.periodo-btn.active {
+  background-color: #fff;
+  color: #1f2937;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+}
+
+/* Estilos melhorados para os cards */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.9rem;
+  height: 5px;
+}
+
+.card-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.card-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  cursor: help;
+}
+
+.card-info i {
+  font-size: 0.85rem;
+}
+
+.card-info:hover {
+  color: #6b7280;
+}
+
+.variacao-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem 0.2rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.card-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Resto dos estilos existentes */
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+/* Estilo geral mantido */
+
+.chart-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.chart-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.chart-center-text {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #10b981; /* verde */
+  margin-top: 1rem;
+}
+
+.chart-center-text span {
+  font-size: 1rem;
+  color: #6b7280; /* cinza */
+}
+
+.chart-icon {
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #6366f1; /* roxo primário */
+}
+
+/* Responsivo para os blocos finais */
+.dashboard-extras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.chart-card-full {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-extras {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Estilos para o tooltip do PrimeReact */
+.p-tooltip {
+  font-size: 0.85rem;
+  max-width: 250px;
+}
+
+.p-tooltip .p-tooltip-text {
+  padding: 0.5rem 0.75rem;
+  background-color: #1f2937;
+  color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.p-tooltip .p-tooltip-arrow {
+  border-top-color: #1f2937;
+}
+
+/* Ajustes para responsividade */
+@media (max-width: 768px) {
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .home-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-card,
+  .chart-card.full {
+    height: auto;
+  }
+
+  .home-wrapper {
+    padding: 1rem;
+  }
+
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .periodo-filter {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .periodo-btn {
+    flex: 1;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+}
+
+
+.chart-with-center {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.chart-center-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.chart-center-large {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 0.5rem;
+}
+
+.chart-media-envio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+

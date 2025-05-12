@@ -1,0 +1,8 @@
+.p-tabview .p-tabview-nav {
+    margin-bottom: 1rem;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary-color);
+}

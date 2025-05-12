@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ---------- Estrutura Geral ---------- */
+.login-page {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ---------- Área do Formulário ---------- */
+.login-form-section {
+  flex: 0 0 60%;
+  max-width: 700px;
+  background-color: #0f172a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px;
+}
+
+/* ---------- Logo ---------- */
+.login-logo {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #aeb7c4;
+}
+
+.login-logo img {
+  height: 120px;
+  margin-bottom: 40px;
+}
+
+/* ---------- Título ---------- */
+.login-form-section h1 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+/* ---------- Formulário ---------- */
+.login-form-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form-section label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #cbd5e1;
+  display: block;
+}
+
+.login-form-section input {
+  padding: 14px;
+  font-size: 16px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background-color: #1e293b;
+  color: white;
+  width: 100%;
+}
+
+.login-form-section input::placeholder {
+  color: #64748b;
+}
+
+.login-form-section input:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.login-form-section button {
+  padding: 14px;
+  background: linear-gradient(to right, #2563eb, #3b82f6);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+}
+
+.login-form-section button:hover {
+  background: linear-gradient(to right, #1d4ed8, #2563eb);
+}
+
+/* ---------- Link "Esqueci minha senha" ---------- */
+.login-form-section .forgot {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #94a3b8;
+  cursor: pointer;
+  text-align: left;
+}
+
+.login-form-section .forgot:hover {
+  color: #cbd5e1;
+}
+
+/* ---------- Mensagem de Erro ---------- */
+.login-form-section .error {
+  color: #f87171;
+  font-size: 14px;
+  margin-top: -12px;
+}
+
+/* ---------- Background Animado ---------- */
+.login-bg-section {
+  flex: 1;
+  background: linear-gradient(135deg, #1d4ed8, #9333ea);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-bg-section::before {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: 20%;
+  left: 25%;
+  background: radial-gradient(circle at center, #3b82f6, #9333ea);
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite alternate;
+}
+
+.login-bg-section::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  bottom: -10%;
+  right: -10%;
+  background: radial-gradient(circle at center, #9333ea, #2563eb);
+  filter: blur(120px);
+  opacity: 0.5;
+  animation: float-reverse 7s ease-in-out infinite alternate;
+}
+
+/* ---------- Animações ---------- */
+@keyframes float {
+  from {
+    transform: translateY(0px) rotate(0deg);
+  }
+  to {
+    transform: translateY(-30px) rotate(10deg);
+  }
+}
+
+@keyframes float-reverse {
+  from {
+    transform: translateY(0px) rotate(0deg);
+  }
+  to {
+    transform: translateY(30px) rotate(-10deg);
+  }
+}
+
+/* ---------- Responsividade ---------- */
+@media (max-width: 1024px) {
+  .login-page {
+    flex-direction: column;
+  }
+
+  .login-form-section {
+    flex: 1;
+    max-width: 100%;
+    width: 100%;
+    padding: 60px 40px;
+    align-items: center;
+  }
+
+  .login-form-section form {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .login-bg-section {
+    flex: 0;
+    height: 250px;
+    max-width: 100%;
+  }
+
+  .login-bg-section::before,
+  .login-bg-section::after {
+    display: none;
+  }
+
+  .login-logo {
+    display: flex;
+    justify-content: center;
+  }
+
+  .login-logo img {
+    height: 80px;
+    margin-bottom: 24px;
+  }
+
+  .login-form-section h1 {
+    text-align: center;
+    width: 100%;
+  }
+
+  .login-form-section .forgot {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form-section {
+    padding: 40px 20px;
+  }
+
+  .login-form-section form {
+    max-width: 100%;
+  }
+
+  .login-form-section input,
+  .login-form-section button {
+    font-size: 15px;
+  }
+
+  .login-logo img {
+    height: 64px;
+  }
+}

@@ -1,0 +1,114 @@
+/* analytics.css */
+
+.analytics-wrapper {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .campanha-multiselect {
+    width: 400px; /* aumente conforme necessário */
+  }
+  
+  .analytics-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
+    gap: 1.5rem;
+  }
+  
+  .dashboard-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-width: 200px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.9rem;
+  }
+  
+  .card-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #6b7280;
+  }
+  
+  .card-info i {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    cursor: help;
+  }
+  
+  .variacao-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1rem 0.2rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .card-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #111827;
+    text-align: center;
+  }
+  
+  /* PrimeReact MultiSelect adjustments */
+  .p-multiselect {
+    width: 100%;
+  }
+  
+  .p-multiselect-label {
+    padding: 0.5rem;
+  }
+  
+  .p-multiselect-panel {
+    max-height: 300px;
+  }
+  
+  /* Responsivo: 4 cards por linha em telas grandes */
+  @media (min-width: 1200px) {
+    .analytics-cards {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .analytics-cards {
+      grid-template-columns: 1fr;
+    }
+    .analytics-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }

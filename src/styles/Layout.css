@@ -1,0 +1,23 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.conteudo-principal {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.menu-lateral {
+    width: 250px; /* ajuste conforme seu design */
+    background-color: #fff;
+    border-right: 1px solid #e5e7eb;
+}
+
+.conteudo {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}

@@ -1,0 +1,71 @@
+.analytics-dados-wrapper {
+    padding: 20px;
+  }
+  
+
+  .analytics-header-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    display: flex;
+  }
+
+  .analytics-header-title h2 {
+    margin: 0;
+    margin-top: 10px;
+    margin-left: 5px;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+
+
+
+  h2 {
+    margin-bottom: 0px;
+  }
+  
+  .analytics-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .analytics-content {
+    display: flex;
+    gap: 30px;
+  }
+  
+  .left-pane {
+    flex: 1;
+    max-width: 300px;
+  }
+  
+  .message-preview {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    min-height: 200px;
+  }
+  
+  .right-pane {
+    flex: 2;
+  }
+  
+  .kpi-bar {
+    margin-bottom: 20px;
+  }
+  
+  .kpi-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .kpi-label i {
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  
