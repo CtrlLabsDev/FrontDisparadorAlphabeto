@@ -4,7 +4,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { InputText } from "primereact/inputtext";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import "../../styles/Template.css";
+import "../../styles/template.css";
 import EmojiPicker from 'emoji-picker-react';
 import { Smile, Bold, Italic, Strikethrough } from 'lucide-react';
 
