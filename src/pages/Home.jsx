@@ -10,6 +10,13 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ProgressBar } from 'primereact/progressbar';
 import { Tag } from 'primereact/tag';
+import { useCallback } from "react"; // já deve estar importado
+import { Calendar } from 'primereact/calendar';
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // estilo base
+import 'react-date-range/dist/theme/default.css'; // tema
+
+
 
 
 export default function Home() {
@@ -26,10 +33,37 @@ export default function Home() {
   const [dadosGrafico, setDadosGrafico] = useState({ labels: [], datasets: [],});
   const [dadosReceitaConversao, setDadosReceitaConversao] = useState({
     receita: 0, pedidos: 0, variacao: { receita: 0, pedidos: 0,},});
+    const [dataInicio, setDataInicio] = useState(null);
+    const [dataFim, setDataFim] = useState(null);
+
+      const getPeriodoParam = useCallback(() => {
+      if (periodoSelecionado === "custom") {
+        if (dataInicio && dataFim) {
+          return `custom&inicio=${dataInicio.toISOString().slice(0, 10)}&fim=${dataFim.toISOString().slice(0, 10)}`;
+        }
+        return null; // evita undefined
+      }
+      return periodoSelecionado;
+    }, [periodoSelecionado, dataInicio, dataFim]);
+
+
+    const [showRange, setShowRange] = useState(false);
+    const [range, setRange] = useState([
+      {
+        startDate: new Date(),
+        endDate: new Date(),
+        key: 'selection',
+      },
+    ]);
+
+    
+  
+    
+      
   // Efeito para buscar KPIs
   useEffect(() => {
     // Buscar dados do KPI
-    api.get(`dashboard-kpis/?periodo=${periodoSelecionado}`)
+    api.get(`dashboard-kpis/?periodo=${getPeriodoParam()}`)
       .then((res) => {
         // Verificar se a API retornou dados de variação
         const variacao = res.data.variacao || {
@@ -62,10 +96,10 @@ export default function Home() {
             com_erro: 0.00
           }
         });
-      });
+      }, [getPeriodoParam]);
 
     // Buscar dados de receita e conversão
-    api.get(`dashboard-receita-conversao/?periodo=${periodoSelecionado}`)
+    api.get(`dashboard-receita-conversao/?periodo=${getPeriodoParam()}`)
       .then((res) => {
         setDadosReceitaConversao(res.data);
       })
@@ -91,7 +125,7 @@ export default function Home() {
       });
       
     // Nova chamada para os dados dos cards principais
-    api.get(`dados-cards-principais/?periodo=${periodoSelecionado}`)
+    api.get(`dados-cards-principais/?periodo=${getPeriodoParam()}`)
       .then((res) => {
         // Verificar se a API retornou dados de variação
         const variacao = res.data.variacao || {
@@ -117,85 +151,94 @@ export default function Home() {
           }
         });
       });
-  }, [periodoSelecionado]);
+
+      const periodoParam = getPeriodoParam();
+      if (!periodoParam) return;
+      
+
+
+  }, [getPeriodoParam, periodoSelecionado, dataInicio, dataFim]);
+
+
+
 
   // Efeito para buscar dados do gráfico
   useEffect(() => {
-    api.get(`mensagens-por-dia/?periodo=${periodoSelecionado}`)
-      .then((res) => {
-        setDadosGrafico({
-          labels: res.data.labels,
-          datasets: [
-            {
-              label: "Mensagens por Dia",
-              backgroundColor: "#6366F1",
-              data: res.data.valores,
-              borderRadius: 6,
-              barThickness: 40
-            },
-          ],
-        });
-      })
-      .catch((err) =>
-        console.error("Erro ao carregar gráfico de mensagens:", err)
-      );
-  }, [periodoSelecionado]);
+    api.get(`mensagens-por-dia/?periodo=${getPeriodoParam()}`)
+  .then((res) => {
+    setDadosGrafico({
+      labels: res.data.labels,
+      datasets: [
+        {
+          type: 'line',
+          label: "Receita por Dia (R$)",
+          data: res.data.receitas,
+          borderColor: "#10B981",
+          backgroundColor: "rgba(16, 185, 129, 0.2)",
+          tension: 0.5,
+          yAxisID: 'y1',
+          borderWidth: 4,
+          order: 1
+        },
+        {
+          type: 'bar',
+          label: "Mensagens por Dia",
+          backgroundColor: "#6366F1",
+          data: res.data.mensagens,
+          borderRadius: 6,
+          barThickness: 40,
+          order: 2
+        }
+        
+      ]      
+    });
+  });
+  }, [getPeriodoParam]);
+  
 
   // Opções melhoradas para o gráfico
   const opcoesBarra = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: 0, // ✅ Remove padding interno
+    },
     plugins: {
       legend: {
-        position: 'top',
-        align: 'start',
-        labels: {
-          boxWidth: 15,
-          usePointStyle: true,
-          padding: 20,
-          font: {
-            size: 12
-          }
-        }
+        position: 'top'
       },
       tooltip: {
-        backgroundColor: '#1f2937',
-        titleFont: {
-          size: 13,
-        },
-        bodyFont: {
-          size: 12
-        },
-        padding: 10,
-        cornerRadius: 6,
-        displayColors: true
+        mode: 'index',
+        intersect: false
       }
     },
     scales: {
       y: {
-        beginAtZero: true,
-        ticks: {
-          font: {
-            size: 12
-          }
-        },
+        type: 'linear',
+        display: true,
+        position: 'left',
+        title: {
+          display: true,
+          text: 'Mensagens'
+        }      },
+      y1: {
+        type: 'linear',
+        display: true,
+        position: 'right',
         grid: {
-          color: '#f3f4f6'
-        }
-      },
-      x: {
-        ticks: {
-          font: {
-            size: 12
-          }
+          drawOnChartArea: false
         },
-        grid: {
-          display: false
-        }
-      }
+        title: {
+          display: true,
+          text: 'Receita (R$)'
+        },
+        ticks: {
+          callback: (value) => `R$ ${value.toLocaleString('pt-BR')}`
+        }}
     }
   };
-
+  
+  
   // Função para obter a cor do badge de variação
   const getVariacaoColor = (valor) => {
     if (valor > 0) return "var(--green-500)";
@@ -230,6 +273,15 @@ export default function Home() {
     return <Tag value={label} severity={color} />;
   };
 
+
+  
+
+  
+
+
+
+  
+
   return (
     <div className="home-wrapper">
       <div className="home-header">
@@ -237,25 +289,57 @@ export default function Home() {
         
         {/* Filtro de Período */}
         <div className="periodo-filter">
-        <button 
-          className={`periodo-btn ${periodoSelecionado === "today" ? "active" : ""}`}
-          onClick={() => setPeriodoSelecionado("today")}
-        >
-          Hoje
-        </button>
-          <button 
-            className={`periodo-btn ${periodoSelecionado === "7 days" ? "active" : ""}`}
-            onClick={() => setPeriodoSelecionado("7 days")}
+          <button className={`periodo-btn ${periodoSelecionado === "today" ? "active" : ""}`} onClick={() => setPeriodoSelecionado("today")}>Hoje</button>
+          <button className={`periodo-btn ${periodoSelecionado === "7 days" ? "active" : ""}`} onClick={() => setPeriodoSelecionado("7 days")}>7 Dias</button>
+          <button className={`periodo-btn ${periodoSelecionado === "30 days" ? "active" : ""}`} onClick={() => setPeriodoSelecionado("30 days")}>30 Dias</button>
+          <button
+            className={`periodo-btn ${periodoSelecionado === "custom" ? "active" : ""}`}
+            onClick={() => setShowRange(true)}
           >
-            7 days
+            {periodoSelecionado === "custom" && dataInicio && dataFim
+              ? `Personalizado - ${dataInicio.toLocaleDateString('pt-BR')} até ${dataFim.toLocaleDateString('pt-BR')}`
+              : "Personalizado"}
           </button>
-          <button 
-            className={`periodo-btn ${periodoSelecionado === "30 days" ? "active" : ""}`}
-            onClick={() => setPeriodoSelecionado("30 days")}
-          >
-            30 days
-          </button>
+
+
+
+          {showRange && (
+            <div className="date-range-popup">
+              <DateRangePicker
+                onChange={(item) => setRange([item.selection])}
+                moveRangeOnFirstSelection={false}
+                ranges={range}
+                months={2}
+                direction="horizontal"
+              />
+              <div className="date-range-actions">
+                <button onClick={() => setShowRange(false)}>Cancelar</button>
+                <button
+                  onClick={() => {
+                    setDataInicio(range[0].startDate);
+                    setDataFim(range[0].endDate);
+                    setPeriodoSelecionado("custom");
+                    setShowRange(false);
+                  }}
+                >
+                  Aplicar
+                </button>
+              </div>
+            </div>
+          )}
+
+
         </div>
+
+        {periodoSelecionado === "custom" && (
+          <div className="periodo-display">
+            <span className="periodo-label">
+              Personalizado - {dataInicio?.toLocaleDateString('pt-BR')} até {dataFim?.toLocaleDateString('pt-BR')}
+            </span>
+          </div>
+        )}
+
+
       </div>
 
       {/* Cards com design melhorado */}
@@ -372,17 +456,21 @@ export default function Home() {
       {/* Gráfico de barras aprimorado */}
       <Card className="chart-card-full">
         <div className="chart-header">
-          <h3>Mensagens Enviadas por Dia</h3>
+          <h3>Mensagens x Receita por Dia</h3>
         </div>
-        <div className="chart-content">
-          <Chart
-            ref={chartRef}
-            type="bar"
-            data={dadosGrafico}
-            options={opcoesBarra}
-          />
-        </div>
+        <div className="chart-wrapper">
+        <Chart
+          ref={chartRef}
+          type="bar"
+          data={dadosGrafico}
+          options={opcoesBarra}
+          style={{ width: '100%', height: '400px' }}
+        />
+
+      </div>
+
       </Card>
+
       
       {/* Tabela com as Campanhas ativas */}
       <Card className="mt-4">

@@ -29,6 +29,12 @@ export default function Analytics() {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [campanhasDetalhadas, setCampanhasDetalhadas] = useState([]);
+  const formatarData = (dataString) => {
+    const data = new Date(dataString);
+    if (isNaN(data)) return "";
+    return new Intl.DateTimeFormat("pt-BR").format(data);
+  };
+  
 
 
 
@@ -37,7 +43,7 @@ export default function Analytics() {
     api.get("/lista-campanhas/")
       .then(res => {
         const lista = res.data.map(c => ({
-          label: c.nome,
+          label: `${formatarData(c.data_criacao)} - ${c.nome}`,
           value: c.id,
           status: c.status,
         }));
@@ -148,6 +154,7 @@ export default function Analytics() {
           display="chip"
           className="campanha-multiselect"
           style={{ minWidth: "300px" }}
+          filter
         />
       </div>
 
