@@ -98,7 +98,7 @@ export default function Campanhas() {
         const interval = setInterval(() => {
             buscarCampanhas();
             buscarStatusCampanhas();
-        }, 10000);
+        }, 60000);
         
         return () => clearInterval(interval);
     }, []);
