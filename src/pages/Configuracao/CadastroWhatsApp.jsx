@@ -48,7 +48,7 @@ export default function CadastroWhatsApp({ onSuccess, dadosEdicao = null }) {
       };
   
       if (dadosEdicao && dadosEdicao.id) {
-        await api.put(`/zap-config/${dadosEdicao.id}/`, payload);
+        await api.patch(`/zap-config/${dadosEdicao.id}/`, payload);
       } else {
         await api.post("/zap-config/", payload);
       }

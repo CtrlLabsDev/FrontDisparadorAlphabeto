@@ -10,9 +10,9 @@ export default function MenuLateral() {
     { label: "Home", icon: "pi pi-home", to: "/" },
     { label: "Campanhas", icon: "pi pi-send", to: "/campanhas" },
     { label: "Analytics", icon: "pi pi-chart-line", to: "/analytics" },
-    { label: "Inbox", icon: "pi pi-inbox", to: "/inbox" },
-    { label: "Contatos", icon: "pi pi-user", to: "/contatos" },
-    { label: "Automatização", icon: "pi pi-refresh", to: "/automatizacao" },
+    { label: "BlackList", icon: "pi pi-inbox", to: "/blacklist" },
+    // { label: "Contatos", icon: "pi pi-user", to: "/contatos" },
+    // { label: "Automatização", icon: "pi pi-refresh", to: "/automatizacao" },
     { label: "Configurações", icon: "pi pi-cog", to: "/configuracao" },
   ];
 

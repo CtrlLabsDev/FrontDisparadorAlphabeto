@@ -33,7 +33,14 @@ export default function ImportarDados() {
         }
     
         // Carrega lista de WhatsApps
-        api.get("/whatsapps/").then((res) => setWhatsapps(res.data));
+        api.get("/whatsapps/")
+  .then((res) => {
+    setWhatsapps(res.data.whatsapps || []);
+  })
+  .catch((err) => {
+    console.error("Erro ao carregar instâncias de WhatsApp", err);
+    setWhatsapps([]); // fallback para evitar .find em undefined
+  });
     }, []);
     
     
@@ -83,7 +90,7 @@ export default function ImportarDados() {
         if (!campanhaId) return;
 
         try {
-            await api.patch(`/campanhas/${campanhaId}/atualizar-whatsapp/`, {
+            await api.patch(`/whatsapp/atualizar-campanha/${campanhaId}/`, {
                 id_whatsapp: idWpp,
             });
         } catch {
@@ -104,17 +111,17 @@ export default function ImportarDados() {
             {/* SEÇÃO "DE" */}
             <h3 className="text-lg font-semibold mt-4 mb-2">De</h3>
             <p className="mb-2">Escolha qual conta WhatsApp Business será usada para o disparo.</p>
-            <Dropdown
+                <Dropdown
                 value={whatsapps.find(w => w.id === whatsappSelecionado) || null}
                 options={whatsapps}
                 onChange={(e) => {
                     setWhatsappSelecionado(e.value.id);
                     atualizarWhatsAppNaCampanha(e.value.id);
                 }}
-                optionLabel="descricao"
+                optionLabel="whatsapp"
                 placeholder="Selecione um número"
                 className="mb-4 w-full md:w-40rem"
-            />
+                />
 
             {/* SEÇÃO "PARA" */}
             <h3 className="text-lg font-semibold mt-4 mb-2">Para</h3>

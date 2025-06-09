@@ -1,4 +1,3 @@
-// src/routes/AppRouter.jsx
 import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "../pages/Home";
 import Campanhas from "../pages/Campanhas";
@@ -17,15 +16,13 @@ import Layout from "../components/Layout";
 import PrivateRoute from "../pages/PrivateRoute";
 import Inbox from "../pages/Inbox"; 
 import Analytics from "../pages/Analytics";
-import AnalyticsDados from "../pages/AnalyticsDados"; // Importando o novo componente de Analytics
+import AnalyticsDados from "../pages/AnalyticsDados";
+import BlacklistPage from "../pages/BlacklistPage"; // 👈 nova importação
 
 export default function AppRouter() {
   return (
     <Routes>
-      {/* Rota de Login pública */}
       <Route path="/login" element={<Login />} />
-
-      {/* Rotas protegidas com layout */}
       <Route
         path="/"
         element={
@@ -52,9 +49,9 @@ export default function AppRouter() {
         <Route path="inbox" element={<Inbox />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="analytics/dados" element={<AnalyticsDados />} />
+        <Route path="blacklist" element={<BlacklistPage />} /> {/* ✅ nova rota */}
       </Route>
 
-      {/* Redirecionamento catch-all */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
