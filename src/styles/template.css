@@ -378,6 +378,110 @@
 .tracking-button:hover .tracking-button-tooltip {
   opacity: 1;
 }
+
+
+/* Adicione ao seu template.css */
+
+/* Estilos para o modal de teste */
+.whatsapp-preview-mini {
+  max-width: 300px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Botão de envio teste */
+.p-button-info {
+  background-color: #17a2b8 !important;
+  border-color: #17a2b8 !important;
+}
+
+.p-button-info:hover {
+  background-color: #138496 !important;
+  border-color: #117a8b !important;
+}
+
+.p-button-success {
+  background-color: #28a745 !important;
+  border-color: #28a745 !important;
+}
+
+.p-button-success:hover {
+  background-color: #218838 !important;
+  border-color: #1e7e34 !important;
+}
+
+/* Grid responsivo para variáveis */
+@media (max-width: 768px) {
+  .grid.grid-cols-1.md\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Estilos para inputs de variáveis */
+.template-variable-input {
+  font-size: 0.875rem;
+}
+
+/* Preview da mensagem no modal */
+.whatsapp-preview-mini .bg-white {
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Botão do WhatsApp no preview */
+.whatsapp-preview-mini .bg-green-500 {
+  cursor: default;
+  transition: background-color 0.2s;
+}
+
+.whatsapp-preview-mini .bg-green-500:hover {
+  background-color: #16a34a;
+}
+
+/* Avisos e alertas */
+.alert-warning {
+  background-color: #fef3cd;
+  border-color: #faebcc;
+  color: #856404;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+}
+
+/* Loading no modal */
+.modal-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Estilos para campos de telefone */
+.phone-input {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+}
+
+/* Responsividade para o modal */
+@media (max-width: 600px) {
+  .p-dialog {
+    width: 95% !important;
+    margin: 0 auto;
+  }
   
+  .template-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .template-buttons .p-button {
+    width: 100%;
+  }
+}
   
   
