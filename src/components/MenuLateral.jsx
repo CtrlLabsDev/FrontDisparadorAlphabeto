@@ -78,7 +78,7 @@ export default function MenuLateral() {
           </button>
           
           <div className="mobile-logo">
-            <h2>📊 Dashboard</h2>
+            <h2><i className="pi pi-chart-bar" style={{ marginRight: '0.5rem' }}></i>Dashboard</h2>
           </div>
 
           <button 
@@ -104,7 +104,7 @@ export default function MenuLateral() {
         {/* HEADER DO DRAWER (só mobile) */}
         {isMobile && (
           <div className="drawer-header">
-            <h3>📊 Menu</h3>
+            <h3><i className="pi pi-chart-bar" style={{ marginRight: '0.5rem' }}></i>Menu</h3>
             <button 
               className="drawer-close"
               onClick={() => setIsOpen(false)}
@@ -119,7 +119,7 @@ export default function MenuLateral() {
         {!isMobile && (
           <div className="menu-top">
             <div className="logo-section">
-              <h3>📊 Dashboard</h3>
+              <h3><i className="pi pi-chart-bar" style={{ marginRight: '0.5rem' }}></i>Dashboard</h3>
             </div>
             <Button
               label="Criar Campanha"

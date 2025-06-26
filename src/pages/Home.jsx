@@ -304,7 +304,7 @@ export default function Home() {
     return (
       <div className="home-wrapper">
         <div className="home-header">
-          <h2>📊 Resumo das Campanhas</h2>
+          <h2><i className="pi pi-chart-bar" style={{ marginRight: '0.5rem' }}></i>Resumo das Campanhas</h2>
           <div className="periodo-filter">
             <div className="loading-shimmer" style={{ width: '200px', height: '40px', borderRadius: '16px' }}></div>
           </div>
@@ -320,7 +320,7 @@ export default function Home() {
     <div className="home-wrapper">
       {/* HEADER */}
       <div className="home-header">
-        <h2>📊 Resumo das Campanhas</h2>
+        <h2><i className="pi pi-chart-bar" style={{ marginRight: '0.5rem' }}></i>Resumo das Campanhas</h2>
         
         {/* Filtro de Período */}
         <div className="periodo-filter">
