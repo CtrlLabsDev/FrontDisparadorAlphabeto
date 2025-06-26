@@ -521,7 +521,10 @@ export default function Campanhas() {
                     icon="pi pi-chart-bar" 
                     className="action-btn analytics-btn" 
                     tooltip="Ver Analytics"
-                    onClick={() => navigate(`/analytics/campanha/${rowData.id}`)} 
+                    onClick={() => {
+                        localStorage.setItem("campanhaId", rowData.id);
+                        navigate("/analytics/dados");
+                    }} 
                 />
             </div>
         );

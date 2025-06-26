@@ -1,0 +1,422 @@
+/* ==================================================
+   DADOS-CAMPANHA.CSS - DESIGN CORRIGIDO
+   ================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ===========================================
+   1. LAYOUT PRINCIPAL CORRIGIDO
+   =========================================== */
+.dados-campanha-wrapper {
+  padding: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
+}
+
+/* Remover background conflitante */
+.dados-campanha-wrapper::before {
+  display: none;
+}
+
+/* ===========================================
+   2. HEADER COM PROGRESSO CORRIGIDO
+   =========================================== */
+.step-header {
+  margin-bottom: 2rem;
+  text-align: center;
+  background: none;
+}
+
+.step-info h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #1e293b;
+  text-shadow: none;
+}
+
+.step-info p {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0 0 1.5rem 0;
+  font-weight: 500;
+}
+
+.step-progress {
+  max-width: 400px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.progress-bar {
+  height: 6px !important;
+  background: #e2e8f0 !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+.progress-bar .p-progressbar-value {
+  background: #6366f1 !important;
+  border-radius: 6px !important;
+  transition: all 0.6s ease !important;
+}
+
+/* ===========================================
+   3. CARD PRINCIPAL CORRIGIDO
+   =========================================== */
+.form-card {
+  background: white !important;
+  border-radius: 16px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  margin-bottom: 1.5rem !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+
+.form-content {
+  padding: 2rem;
+}
+
+/* ===========================================
+   4. GRUPOS DE INPUT CORRIGIDOS
+   =========================================== */
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.form-input,
+.form-textarea {
+  width: 100% !important;
+  padding: 0.875rem 1rem !important;
+  border: 2px solid #d1d5db !important;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  background: white !important;
+  color: #1f2937 !important;
+  font-family: inherit !important;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+  outline: none !important;
+}
+
+.form-input.valid {
+  border-color: #10b981 !important;
+}
+
+.form-input.invalid {
+  border-color: #ef4444 !important;
+}
+
+.form-textarea {
+  resize: vertical !important;
+  min-height: 100px !important;
+  line-height: 1.5 !important;
+}
+
+/* ===========================================
+   5. FEEDBACK CORRIGIDO
+   =========================================== */
+.input-feedback {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+  padding: 0;
+}
+
+.char-counter {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.validation-icon {
+  font-size: 1rem;
+}
+
+.input-help {
+  color: #6b7280;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  line-height: 1.3;
+}
+
+/* ===========================================
+   6. PREVIEW CORRIGIDO
+   =========================================== */
+.campaign-preview {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.campaign-preview h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4f46e5;
+  margin: 0 0 0.75rem 0;
+}
+
+.preview-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-icon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+
+.preview-info {
+  flex: 1;
+}
+
+.preview-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.125rem;
+}
+
+.preview-status {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.preview-description {
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+  color: #4b5563;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+/* ===========================================
+   7. BOTÕES CORRIGIDOS
+   =========================================== */
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.back-btn,
+.next-btn {
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s ease !important;
+  min-width: 120px !important;
+}
+
+.back-btn {
+  background: #f9fafb !important;
+  border: 1px solid #d1d5db !important;
+  color: #374151 !important;
+}
+
+.back-btn:hover:not(:disabled) {
+  background: #f3f4f6 !important;
+  border-color: #9ca3af !important;
+}
+
+.next-btn {
+  background: #6366f1 !important;
+  border: 1px solid #6366f1 !important;
+  color: white !important;
+}
+
+.next-btn:hover:not(:disabled) {
+  background: #5b21b6 !important;
+  border-color: #5b21b6 !important;
+}
+
+.next-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* ===========================================
+   8. TIPS CARD CORRIGIDO
+   =========================================== */
+.tips-card {
+  background: white !important;
+  border-radius: 12px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  padding: 0 !important;
+}
+
+.tips-card .p-card-content {
+  padding: 1.5rem !important;
+}
+
+.tips-card h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 3px solid #6366f1;
+}
+
+.tip-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.tip-item span:last-child {
+  color: #4b5563;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+/* ===========================================
+   9. RESPONSIVIDADE
+   =========================================== */
+@media (max-width: 768px) {
+  .dados-campanha-wrapper {
+    padding: 1rem;
+  }
+
+  .step-info h1 {
+    font-size: 1.8rem;
+  }
+
+  .form-content {
+    padding: 1.5rem;
+  }
+
+  .navigation-buttons {
+    flex-direction: column;
+  }
+
+  .back-btn,
+  .next-btn {
+    width: 100% !important;
+    min-width: auto !important;
+  }
+
+  .preview-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .preview-info {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .step-info h1 {
+    font-size: 1.6rem;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: 0.75rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .tips-card .p-card-content {
+    padding: 1rem !important;
+  }
+}
+
+/* ===========================================
+   10. ANIMAÇÕES SUTIS
+   =========================================== */
+.form-card {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================
+   11. TOAST SIMPLES
+   =========================================== */
+.p-toast .p-toast-message {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+}
