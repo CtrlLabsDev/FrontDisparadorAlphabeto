@@ -1,23 +1,86 @@
-.layout {
-    display: flex;
+/* ==================================================
+   LAYOUT.CSS - ORGANIZAÇÃO PRINCIPAL
+   ================================================== */
+
+/* Layout principal */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Conteúdo principal */
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Wrapper do conteúdo */
+.content-wrapper {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ===========================================
+   RESPONSIVIDADE
+   =========================================== */
+
+/* Desktop - com sidebar */
+@media (min-width: 769px) {
+  .app-content {
+    margin-left: 280px; /* largura da sidebar */
+  }
+}
+
+/* Mobile - com header */
+@media (max-width: 768px) {
+  .app-layout {
     flex-direction: column;
-    height: 100vh;
+  }
+  
+  .app-content {
+    margin-left: 0;
+    padding-top: 64px; /* altura do header mobile */
+  }
+  
+  .content-wrapper {
+    padding: 0;
+  }
 }
 
-.conteudo-principal {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
+/* Tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .app-content {
+    margin-left: 260px; /* sidebar um pouco menor */
+  }
 }
 
-.menu-lateral {
-    width: 250px; /* ajuste conforme seu design */
-    background-color: #fff;
-    border-right: 1px solid #e5e7eb;
+/* Telas muito grandes */
+@media (min-width: 1400px) {
+  .content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
 }
 
-.conteudo {
-    flex: 1;
-    padding: 1rem;
-    overflow-y: auto;
+/* ===========================================
+   OTIMIZAÇÕES DE PERFORMANCE
+   =========================================== */
+
+/* Usar GPU para animações */
+.app-content,
+.content-wrapper {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Otimizar scrolling */
+.app-content {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
