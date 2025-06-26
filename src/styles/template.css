@@ -183,6 +183,201 @@
     gap: 0rem;
     margin-top: 0rem;
   }
+
+/* Adicione essas regras ao seu arquivo template.css */
+
+/* Estilos para o modal de tracking */
+.p-dialog .p-dialog-content {
+  padding: 0 !important;
+}
+
+.tracking-info-box {
+  background: #f8f9fa;
+  border-left: 4px solid #007bff;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 0 4px 4px 0;
+}
+
+.tracking-info-box h4 {
+  color: #0056b3;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.tracking-info-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tracking-info-box li {
+  padding: 0.25rem 0;
+  color: #495057;
+}
+
+/* Animação para o ícone de sucesso */
+.copy-success {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Estilos para os campos de input com botão */
+.input-with-button {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.input-with-button .p-inputtext {
+  flex: 1;
+}
+
+/* Melhorias na pré-visualização do WhatsApp */
+.whatsapp-box {
+  background: #e5ddd5;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 300px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.whatsapp-header {
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+
+.whatsapp-message {
+  background: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.whatsapp-footer {
+  background: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.whatsapp-button {
+  display: block;
+  background: #25d366;
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-button:hover {
+  background: #128c7e;
+  color: white;
+}
+
+/* Responsividade para o modal */
+@media (max-width: 768px) {
+  .p-dialog {
+    width: 95% !important;
+    margin: 0 auto;
+  }
+  
+  .tracking-info-box {
+    font-size: 14px;
+  }
+}
+
+/* Estilos para loading spinner customizado */
+.processing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.processing-container p {
+  margin-top: 1rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Melhorias nos botões de formatação */
+.template-buttons .p-button-text {
+  min-width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  margin-right: 4px;
+}
+
+.template-buttons .p-button-text:hover {
+  background-color: #f8f9fa;
+}
+
+/* Container para textarea com contador */
+.textarea-container {
+  position: relative;
+}
+
+.contador-caracters {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 12px;
+  color: #666;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Estilo para o botão de "Padrão" do footer */
+.footer-reset-btn {
+  white-space: nowrap;
+  min-width: auto;
+}
+
+/* Tooltip customizado para o botão de tracking */
+.tracking-button-tooltip {
+  font-size: 12px;
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.tracking-button:hover .tracking-button-tooltip {
+  opacity: 1;
+}
   
   
   
