@@ -1,0 +1,8 @@
+.file-upload-custom .p-button {
+    border-style: dashed !important;
+    border-width: 2px !important;
+}
+
+.file-upload-custom .p-button:hover {
+    background-color: #f8f9fa !important;
+}
