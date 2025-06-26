@@ -39,6 +39,14 @@ export default function TemplateMensagem() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
     
+    // Estados para o modal de teste
+    const [showTesteModal, setShowTesteModal] = useState(false);
+    const [telefoneTest, setTelefoneTest] = useState("");
+    const [variavelATest, setVariavelATest] = useState("João Silva");
+    const [variavelBTest, setVariavelBTest] = useState("Produto Teste");
+    const [variavelCTest, setVariavelCTest] = useState("10% desconto");
+    const [enviandoTeste, setEnviandoTeste] = useState(false);
+    
     const textareaRef = useRef(null);
     const navigate = useNavigate();
 
@@ -227,21 +235,20 @@ export default function TemplateMensagem() {
                 console.log("✅ Encurtamento via frontend funcionou!");
                 setLinkEncurtado(linkEncurtadoFrontend);
             } else {
-                // Opção 2: Fallback via backend
-                console.log("🔄 Tentando via backend...");
+                // Opção 2: Fallback via backend (temporariamente desabilitado)
+                console.log("⚠️ Serviços de encurtamento falharam, usando URL com tracking");
+                setLinkEncurtado(linkComTracking);
                 
-                try {
-                    const response = await api.post('/encurtar-url/', {
-                        url: linkComTracking
-                    });
-                    
-                    const urlBackend = response.data.url_encurtada;
-                    console.log(`✅ Backend funcionou com ${response.data.origem}:`, urlBackend);
-                    setLinkEncurtado(urlBackend);
-                } catch (backendError) {
-                    console.log("❌ Backend também falhou, usando URL com tracking");
-                    setLinkEncurtado(linkComTracking);
-                }
+                // TODO: Implementar fallback via backend quando necessário
+                // try {
+                //     const response = await api.post('/encurtar-url/', {
+                //         url: linkComTracking
+                //     });
+                //     const urlBackend = response.data.url_encurtada;
+                //     setLinkEncurtado(urlBackend);
+                // } catch (backendError) {
+                //     setLinkEncurtado(linkComTracking);
+                // }
             }
             
         } catch (error) {
@@ -278,6 +285,68 @@ export default function TemplateMensagem() {
 
     const resetarFooter = () => {
         setFooter(FOOTER_PADRAO);
+    };
+
+    // Função para envio de teste
+    const enviarTeste = async () => {
+        if (!telefoneTest.trim()) {
+            alert("Por favor, insira um número de telefone para teste");
+            return;
+        }
+
+        if (!mensagem.trim() || !url.trim() || !labelBotao.trim()) {
+            alert("Complete o template antes de enviar o teste (mensagem, URL e botão são obrigatórios)");
+            return;
+        }
+
+        setEnviandoTeste(true);
+
+        try {
+            // Formatar mensagem com variáveis de teste
+            const mensagemFormatada = mensagem
+                .replace(/{variavel_a}/g, variavelATest)
+                .replace(/{variavel_b}/g, variavelBTest)
+                .replace(/{variavel_c}/g, variavelCTest);
+
+            // Criar payload para envio de teste
+            const payload = {
+                telefone: telefoneTest,
+                mensagem: mensagemFormatada,
+                header: header,
+                footer: footer,
+                url: url,
+                labelBotao: labelBotao,
+                campanha_id: campanhaId,
+                tipo: 'teste'
+            };
+
+            console.log('📤 Enviando teste:', payload);
+
+            const response = await api.post('/enviar-teste/', payload);
+
+            if (response.data.sucesso) {
+                alert(`✅ Teste enviado com sucesso para ${telefoneTest}!`);
+                setShowTesteModal(false);
+                setTelefoneTest("");
+            } else {
+                alert(`❌ Erro no envio: ${response.data.erro || 'Falha desconhecida'}`);
+            }
+
+        } catch (error) {
+            console.error('Erro no envio de teste:', error);
+            const errorMsg = error.response?.data?.erro || error.message || 'Erro desconhecido';
+            alert(`❌ Erro ao enviar teste: ${errorMsg}`);
+        } finally {
+            setEnviandoTeste(false);
+        }
+    };
+
+    // Função para preview da mensagem formatada
+    const previewMensagemTeste = () => {
+        return mensagem
+            .replace(/{variavel_a}/g, variavelATest)
+            .replace(/{variavel_b}/g, variavelBTest)
+            .replace(/{variavel_c}/g, variavelCTest);
     };
 
     const handleProximo = async () => {
@@ -388,6 +457,13 @@ export default function TemplateMensagem() {
 
                     <div className="template-buttons">
                         <Button label="Voltar" icon="pi pi-arrow-left" onClick={() => navigate("/nova-campanha/importar")} />
+                        <Button 
+                            label="Envio Teste" 
+                            icon="pi pi-send" 
+                            className="p-button-outlined p-button-info"
+                            onClick={() => setShowTesteModal(true)}
+                            disabled={!mensagem.trim() || !url.trim() || !labelBotao.trim()}
+                        />
                         <Button label="Próximo" icon="pi pi-arrow-right" onClick={handleProximo} />
                     </div>
                 </div>
@@ -519,6 +595,118 @@ export default function TemplateMensagem() {
                             <li>• Encurta o link para facilitar o envio</li>
                             <li>• Mantém todos os parâmetros originais</li>
                         </ul>
+                    </div>
+                </div>
+            </Dialog>
+
+            {/* Modal de Envio Teste */}
+            <Dialog 
+                header="📱 Envio de Teste" 
+                visible={showTesteModal} 
+                style={{ width: '700px' }}
+                onHide={() => setShowTesteModal(false)}
+                modal
+            >
+                <div className="p-4">
+                    {/* Campo telefone */}
+                    <div className="mb-4">
+                        <label className="font-semibold block mb-2">📞 Número de telefone para teste:</label>
+                        <InputText
+                            value={telefoneTest}
+                            onChange={(e) => setTelefoneTest(e.target.value)}
+                            placeholder="5511999999999 (apenas números)"
+                            className="w-full"
+                        />
+                        <small className="text-gray-600">Digite apenas números, ex: 5511999999999</small>
+                    </div>
+
+                    {/* Variáveis de teste */}
+                    <div className="mb-4">
+                        <h4 className="font-semibold mb-3">🔧 Variáveis para teste:</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label className="text-sm font-medium block mb-1">Variável A:</label>
+                                <InputText
+                                    value={variavelATest}
+                                    onChange={(e) => setVariavelATest(e.target.value)}
+                                    placeholder="Ex: João Silva"
+                                    className="w-full"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium block mb-1">Variável B:</label>
+                                <InputText
+                                    value={variavelBTest}
+                                    onChange={(e) => setVariavelBTest(e.target.value)}
+                                    placeholder="Ex: Produto Teste"
+                                    className="w-full"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium block mb-1">Variável C:</label>
+                                <InputText
+                                    value={variavelCTest}
+                                    onChange={(e) => setVariavelCTest(e.target.value)}
+                                    placeholder="Ex: 10% desconto"
+                                    className="w-full"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Preview da mensagem */}
+                    <div className="mb-4">
+                        <h4 className="font-semibold mb-2">👀 Preview da mensagem que será enviada:</h4>
+                        <div className="bg-gray-50 p-4 rounded border">
+                            <div className="whatsapp-preview-mini">
+                                {header && <div className="font-bold text-sm mb-2 text-center">{header}</div>}
+                                <div className="bg-white p-3 rounded mb-2 text-sm">
+                                    {previewMensagemTeste() || "Sua mensagem aparecerá aqui..."}
+                                </div>
+                                {footer && <div className="text-xs text-gray-600 text-center mb-2">{footer}</div>}
+                                {url && labelBotao && (
+                                    <div className="bg-green-500 text-white text-center py-2 px-4 rounded text-sm font-medium">
+                                        {labelBotao}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Aviso */}
+                    <div className="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                        <div className="flex items-start">
+                            <span className="text-yellow-600 mr-2">⚠️</span>
+                            <div className="text-sm text-yellow-800">
+                                <strong>Atenção:</strong> Este envio de teste utilizará a configuração de WhatsApp 
+                                vinculada à campanha. Certifique-se de que o número está correto e que você tem 
+                                permissão para enviar mensagens para ele.
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Loading */}
+                    {enviandoTeste && (
+                        <div className="text-center mb-4">
+                            <ProgressSpinner size="40" />
+                            <p className="mt-2 text-blue-600">Enviando mensagem de teste...</p>
+                        </div>
+                    )}
+
+                    {/* Botões */}
+                    <div className="flex justify-end gap-3">
+                        <Button 
+                            label="Cancelar" 
+                            className="p-button-text"
+                            onClick={() => setShowTesteModal(false)}
+                            disabled={enviandoTeste}
+                        />
+                        <Button 
+                            label={enviandoTeste ? "Enviando..." : "📨 Enviar Teste"} 
+                            className="p-button-success"
+                            onClick={enviarTeste}
+                            disabled={!telefoneTest.trim() || enviandoTeste}
+                        />
                     </div>
                 </div>
             </Dialog>
