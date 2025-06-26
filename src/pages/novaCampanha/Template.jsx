@@ -128,47 +128,72 @@ export default function TemplateMensagem() {
         }
     };
 
-    // Função para encurtar URL (usando TinyURL como exemplo)
+    // Função para encurtar URL com múltiplos serviços
     const encurtarUrl = async (urlLonga) => {
-        try {
-            // Opção 1: TinyURL (gratuito, sem API key)
-            const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(urlLonga)}`);
-            const urlEncurtada = await response.text();
-            
-            if (urlEncurtada.startsWith('http')) {
-                return urlEncurtada;
+        const servicos = [
+            {
+                nome: 'TinyURL',
+                encurtar: async (url) => {
+                    const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
+                    const resultado = await response.text();
+                    if (resultado.startsWith('http') && resultado !== url && !resultado.includes('Error')) {
+                        return resultado.trim();
+                    }
+                    throw new Error('TinyURL falhou');
+                }
+            },
+            {
+                nome: 'is.gd',
+                encurtar: async (url) => {
+                    const response = await fetch('https://is.gd/create.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `format=simple&url=${encodeURIComponent(url)}`
+                    });
+                    const resultado = await response.text();
+                    if (resultado.startsWith('http') && resultado !== url && !resultado.includes('Error')) {
+                        return resultado.trim();
+                    }
+                    throw new Error('is.gd falhou');
+                }
+            },
+            {
+                nome: 'v.gd',
+                encurtar: async (url) => {
+                    const response = await fetch('https://v.gd/create.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `format=simple&url=${encodeURIComponent(url)}`
+                    });
+                    const resultado = await response.text();
+                    if (resultado.startsWith('http') && resultado !== url && !resultado.includes('Error')) {
+                        return resultado.trim();
+                    }
+                    throw new Error('v.gd falhou');
+                }
             }
-            
-            // Fallback: usar o próprio link trackeado se o encurtador falhar
-            return urlLonga;
-        } catch (error) {
-            console.error('Erro ao encurtar URL:', error);
-            return urlLonga;
-        }
-    };
+        ];
 
-    // Alternativa usando is.gd (mais confiável)
-    const encurtarUrlIsGd = async (urlLonga) => {
-        try {
-            const response = await fetch('https://is.gd/create.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `format=simple&url=${encodeURIComponent(urlLonga)}`
-            });
-            
-            const urlEncurtada = await response.text();
-            
-            if (urlEncurtada.startsWith('http')) {
+        // Tentar cada serviço sequencialmente
+        for (const servico of servicos) {
+            try {
+                console.log(`🔗 Tentando encurtar com ${servico.nome}...`);
+                const urlEncurtada = await servico.encurtar(urlLonga);
+                console.log(`✅ ${servico.nome} funcionou:`, urlEncurtada);
                 return urlEncurtada;
+            } catch (error) {
+                console.log(`❌ ${servico.nome} falhou:`, error.message);
+                continue;
             }
-            
-            return urlLonga;
-        } catch (error) {
-            console.error('Erro ao encurtar URL:', error);
-            return urlLonga;
         }
+
+        // Se todos falharam, retornar URL original
+        console.log('⚠️ Todos os serviços de encurtamento falharam, usando URL original');
+        return urlLonga;
     };
 
     const processarLink = async () => {
@@ -180,6 +205,9 @@ export default function TemplateMensagem() {
         setIsProcessing(true);
         
         try {
+            // Opção 1: Tentar via frontend (direto)
+            console.log("🔗 Tentando processamento via frontend...");
+            
             // 1. Adicionar tracking
             const linkComTracking = adicionarTracking(linkOriginal, campanhaId);
             
@@ -191,13 +219,43 @@ export default function TemplateMensagem() {
             
             setLinkTrackeado(linkComTracking);
             
-            // 2. Encurtar URL
-            const linkFinal = await encurtarUrlIsGd(linkComTracking);
-            setLinkEncurtado(linkFinal);
+            // 2. Tentar encurtar via frontend
+            const linkEncurtadoFrontend = await encurtarUrl(linkComTracking);
+            
+            // Se conseguiu encurtar via frontend
+            if (linkEncurtadoFrontend !== linkComTracking) {
+                console.log("✅ Encurtamento via frontend funcionou!");
+                setLinkEncurtado(linkEncurtadoFrontend);
+            } else {
+                // Opção 2: Fallback via backend
+                console.log("🔄 Tentando via backend...");
+                
+                try {
+                    const response = await api.post('/encurtar-url/', {
+                        url: linkComTracking
+                    });
+                    
+                    const urlBackend = response.data.url_encurtada;
+                    console.log(`✅ Backend funcionou com ${response.data.origem}:`, urlBackend);
+                    setLinkEncurtado(urlBackend);
+                } catch (backendError) {
+                    console.log("❌ Backend também falhou, usando URL com tracking");
+                    setLinkEncurtado(linkComTracking);
+                }
+            }
             
         } catch (error) {
             console.error('Erro ao processar link:', error);
-            alert("Erro ao processar o link. Tente novamente.");
+            
+            // Último fallback: apenas adicionar tracking
+            const linkComTracking = adicionarTracking(linkOriginal, campanhaId);
+            if (linkComTracking) {
+                setLinkTrackeado(linkComTracking);
+                setLinkEncurtado(linkComTracking);
+                alert("Não foi possível encurtar o link, mas o tracking foi adicionado.");
+            } else {
+                alert("Erro ao processar o link. Verifique se é uma URL válida.");
+            }
         } finally {
             setIsProcessing(false);
         }
@@ -412,7 +470,12 @@ export default function TemplateMensagem() {
 
                     {linkEncurtado && (
                         <div className="mb-4">
-                            <label className="font-semibold block mb-2">Link encurtado (recomendado):</label>
+                            <label className="font-semibold block mb-2">
+                                {linkEncurtado === linkTrackeado ? 
+                                    "Link com tracking (não foi possível encurtar):" : 
+                                    "Link encurtado (recomendado):"
+                                }
+                            </label>
                             <div className="flex gap-2">
                                 <InputText
                                     value={linkEncurtado}
@@ -425,6 +488,11 @@ export default function TemplateMensagem() {
                                     onClick={() => copiarLink(linkEncurtado)}
                                 />
                             </div>
+                            {linkEncurtado === linkTrackeado && (
+                                <small className="text-orange-600 block mt-1">
+                                    ⚠️ Serviços de encurtamento indisponíveis. O link mantém o tracking.
+                                </small>
+                            )}
                         </div>
                     )}
 
