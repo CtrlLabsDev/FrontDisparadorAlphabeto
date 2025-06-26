@@ -460,7 +460,7 @@ export default function TemplateMensagem() {
                         <Button 
                             label="Envio Teste" 
                             icon="pi pi-send" 
-                            className="p-button-outlined p-button-info"
+                            className="p-button-outlined"
                             onClick={() => setShowTesteModal(true)}
                             disabled={!mensagem.trim() || !url.trim() || !labelBotao.trim()}
                         />
