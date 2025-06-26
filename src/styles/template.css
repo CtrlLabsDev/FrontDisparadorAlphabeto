@@ -1,21 +1,29 @@
-/* template.css */
+/* ==================================================
+   TEMPLATE.CSS - VERSÃO CORRIGIDA E ORGANIZADA
+   ================================================== */
 
-
-/* Estilo da grade principal */
+/* ===========================================
+   1. LAYOUT PRINCIPAL E GRID
+   =========================================== */
 .template-form {
   background-color: #fff;
   padding: 1.5rem;
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-
 
 .template-preview {
-
   padding: 1.5rem;
   border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 1rem;
 }
 
-/* Forçar as duas colunas a ocuparem 50% */
+/* Grid responsivo principal */
 @media (min-width: 768px) {
   .grid-cols-1.md\:grid-cols-2 {
     display: grid;
@@ -34,163 +42,218 @@
   }
 }
 
+@media (max-width: 768px) {
+  .grid {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* ===========================================
+   2. WHATSAPP PREVIEW BOX
+   =========================================== */
 .whatsapp-box {
   width: 100%;
-  max-width: 380px;
-  border-radius: 20px;
-  padding: 1rem;
+  max-width: 350px;
+  background: #e5ddd5;
+  border-radius: 16px;
+  padding: 1.5rem;
   border: 1px solid #ccc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
 .whatsapp-header {
   text-align: center;
   font-size: 0.85rem;
-  color: #666;
+  color: #6b7280;
   margin-bottom: 0.5rem;
+  font-weight: 400;
 }
 
 .whatsapp-message {
-  white-space: pre-line;
-  padding: 1rem;
+  background: white;
+  padding: 0.75rem 1rem;
   border-radius: 8px;
-  font-size: 0.95rem;
+  white-space: pre-wrap;
+  font-size: 0.9rem;
   color: #222;
   margin-bottom: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 1.4;
+  word-wrap: break-word;
 }
 
 .whatsapp-footer {
-  text-align: center;
+  background: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   font-size: 0.75rem;
-  color: #777;
+  color: #666;
+  text-align: center;
   font-style: italic;
-  margin-top: 0.5rem;
 }
 
 .whatsapp-button {
   display: block;
   text-align: center;
-  background-color: #22c55e;
+  background: #25d366;
   color: white;
   text-decoration: none;
-  padding: 0.6rem;
+  padding: 0.75rem 1.25rem;
   margin-top: 1rem;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background 0.3s;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .whatsapp-button:hover {
-  background-color: #16a34a;
+  background: #128c7e;
+  color: white;
+  text-decoration: none;
 }
 
+/* ===========================================
+   3. TEXTAREA E INPUTS
+   =========================================== */
+.textarea-container {
+  position: relative;
+}
 
-.p-5 {
-    padding: 2rem;
-  }
-  
-  .template-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .textarea-container {
-    position: relative;
-  }
-  
-  .contador-caracters {
-    position: absolute;
-    bottom: 6px;
-    right: 8px;
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-  
-  .emoji-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    flex-wrap: wrap;
-  }
-  
-  .template-preview {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 1rem;
-  }
-  
-  .template-preview .whatsapp-box {
-    width: 100%;
-    max-width: 350px;
-    border-radius: 1rem;
-    background-color: #fff;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-    padding: 1.5rem;
-  }
-  
-  .template-preview .whatsapp-header {
-    text-align: center;
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin-bottom: 0.5rem;
-  }
-  
-  .template-preview .whatsapp-message {
-    background-color: #f3f4f6;
-    padding: 0.75rem;
-    border-radius: 8px;
-    white-space: pre-line;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .template-preview .whatsapp-footer {
-    font-size: 0.75rem;
-    text-align: center;
-    color: #9ca3af;
-    font-style: italic;
-  }
-  
-  .template-preview .whatsapp-button {
-    display: block;
-    background-color: #22c55e;
-    text-align: center;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    border-radius: 6px;
-    margin-top: 1rem;
-    text-decoration: none;
-  }
-  
-  .template-preview .whatsapp-button:hover {
-    background-color: #16a34a;
-  }
-  
-  @media (max-width: 768px) {
-    .grid {
-      display: flex;
-      flex-direction: column;
-    }
-  }
+.contador-caracters {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 0.75rem;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 10;
+}
 
-  .template-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 0rem;
-    margin-top: 0rem;
-  }
+.input-with-button {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
 
-/* Adicione essas regras ao seu arquivo template.css */
+.input-with-button .p-inputtext {
+  flex: 1;
+}
 
-/* Estilos para o modal de tracking */
+.phone-input {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+}
+
+.template-variable-input {
+  font-size: 0.875rem;
+}
+
+/* ===========================================
+   4. BOTÕES E TOOLBAR
+   =========================================== */
+.template-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Botões de formatação */
+.template-buttons .p-button-text {
+  min-width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  margin-right: 4px;
+  transition: all 0.2s ease;
+}
+
+.template-buttons .p-button-text:hover {
+  background-color: #f8f9fa;
+}
+
+/* Botões principais */
+.template-buttons .p-button:not(.p-button-outlined):not(.p-button-text) {
+  transition: all 0.2s ease;
+}
+
+.template-buttons .p-button:not(.p-button-outlined):not(.p-button-text):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Botão de teste outlined */
+.template-buttons .p-button-outlined {
+  background-color: #f8f9fa;
+  border-color: #6c757d;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.template-buttons .p-button-outlined:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+.template-buttons .p-button-outlined:disabled {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #adb5bd;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Botões desabilitados */
+.template-buttons .p-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ícones dos botões */
+.template-buttons .p-button .p-button-icon {
+  margin-right: 0.5rem;
+}
+
+/* Botão de reset do footer */
+.footer-reset-btn {
+  white-space: nowrap;
+  min-width: auto;
+}
+
+/* ===========================================
+   5. EMOJI PICKER E TOOLBAR
+   =========================================== */
+.emoji-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ===========================================
+   6. MODAIS
+   =========================================== */
 .p-dialog .p-dialog-content {
   padding: 0 !important;
 }
 
+/* Modal de tracking */
 .tracking-info-box {
   background: #f8f9fa;
   border-left: 4px solid #007bff;
@@ -216,6 +279,46 @@
   color: #495057;
 }
 
+/* Preview mini do WhatsApp */
+.whatsapp-preview-mini {
+  max-width: 300px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.whatsapp-preview-mini .bg-white {
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-preview-mini .bg-green-500 {
+  cursor: default;
+  transition: background-color 0.2s;
+}
+
+.whatsapp-preview-mini .bg-green-500:hover {
+  background-color: #16a34a;
+}
+
+/* Loading no modal */
+.modal-loading,
+.processing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.processing-container p {
+  margin-top: 1rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* ===========================================
+   7. ANIMAÇÕES E EFEITOS
+   =========================================== */
 /* Animação para o ícone de sucesso */
 .copy-success {
   animation: pulse 0.5s ease-in-out;
@@ -227,169 +330,51 @@
   100% { transform: scale(1); }
 }
 
-/* Estilos para os campos de input com botão */
-.input-with-button {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.input-with-button .p-inputtext {
-  flex: 1;
-}
-
-/* Melhorias na pré-visualização do WhatsApp */
-.whatsapp-box {
-  background: #e5ddd5;
-  border-radius: 8px;
-  padding: 16px;
-  max-width: 300px;
-  margin: 0 auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.whatsapp-header {
-  text-align: center;
-  color: #666;
-  font-size: 12px;
-  margin-bottom: 16px;
-  font-weight: 400;
-}
-
-.whatsapp-message {
-  background: white;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  font-size: 14px;
-  line-height: 1.4;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-.whatsapp-footer {
-  background: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  font-size: 12px;
-  color: #666;
-  text-align: center;
-}
-
-.whatsapp-button {
-  display: block;
-  background: #25d366;
-  color: white;
-  text-decoration: none;
-  padding: 12px 20px;
-  border-radius: 20px;
-  text-align: center;
-  font-weight: 600;
-  transition: background-color 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.whatsapp-button:hover {
-  background: #128c7e;
-  color: white;
-}
-
-/* Responsividade para o modal */
-@media (max-width: 768px) {
-  .p-dialog {
-    width: 95% !important;
-    margin: 0 auto;
-  }
-  
-  .tracking-info-box {
-    font-size: 14px;
-  }
-}
-
-/* Estilos para loading spinner customizado */
-.processing-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-}
-
-.processing-container p {
-  margin-top: 1rem;
-  color: #666;
-  font-style: italic;
-}
-
-/* Melhorias nos botões de formatação */
-.template-buttons .p-button-text {
-  min-width: 40px;
-  height: 40px;
-  border-radius: 6px;
-  margin-right: 4px;
-}
-
-.template-buttons .p-button-text:hover {
-  background-color: #f8f9fa;
-}
-
-/* Container para textarea com contador */
-.textarea-container {
+/* Animação sutil para todos os botões */
+.template-buttons .p-button {
   position: relative;
+  overflow: hidden;
 }
 
-.contador-caracters {
+.template-buttons .p-button::before {
+  content: '';
   position: absolute;
-  bottom: 8px;
-  right: 12px;
-  font-size: 12px;
-  color: #666;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 2px 6px;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.template-buttons .p-button:hover::before {
+  left: 100%;
+}
+
+/* ===========================================
+   8. ALERTAS E AVISOS
+   =========================================== */
+.alert-warning {
+  background-color: #fef3cd;
+  border-color: #faebcc;
+  color: #856404;
+  padding: 0.75rem;
   border-radius: 4px;
-  pointer-events: none;
+  border-left: 4px solid #f0ad4e;
 }
 
-/* Estilo para o botão de "Padrão" do footer */
-.footer-reset-btn {
-  white-space: nowrap;
-  min-width: auto;
-}
-
-/* Tooltip customizado para o botão de tracking */
-.tracking-button-tooltip {
-  font-size: 12px;
-  background: #333;
-  color: white;
-  padding: 4px 8px;
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+  padding: 0.75rem;
   border-radius: 4px;
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s;
-  pointer-events: none;
+  border-left: 4px solid #17a2b8;
 }
 
-.tracking-button:hover .tracking-button-tooltip {
-  opacity: 1;
-}
-
-
-/* Adicione ao seu template.css */
-
-/* Estilos para o modal de teste */
-.whatsapp-preview-mini {
-  max-width: 300px;
-  margin: 0 auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Botão de envio teste */
+/* ===========================================
+   9. BOTÕES PRIMEREACT CUSTOMIZADOS
+   =========================================== */
 .p-button-info {
   background-color: #17a2b8 !important;
   border-color: #17a2b8 !important;
@@ -410,78 +395,115 @@
   border-color: #1e7e34 !important;
 }
 
-/* Grid responsivo para variáveis */
+/* ===========================================
+   10. RESPONSIVIDADE
+   =========================================== */
 @media (max-width: 768px) {
-  .grid.grid-cols-1.md\\:grid-cols-3 {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-/* Estilos para inputs de variáveis */
-.template-variable-input {
-  font-size: 0.875rem;
-}
-
-/* Preview da mensagem no modal */
-.whatsapp-preview-mini .bg-white {
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Botão do WhatsApp no preview */
-.whatsapp-preview-mini .bg-green-500 {
-  cursor: default;
-  transition: background-color 0.2s;
-}
-
-.whatsapp-preview-mini .bg-green-500:hover {
-  background-color: #16a34a;
-}
-
-/* Avisos e alertas */
-.alert-warning {
-  background-color: #fef3cd;
-  border-color: #faebcc;
-  color: #856404;
-}
-
-.alert-info {
-  background-color: #d1ecf1;
-  border-color: #bee5eb;
-  color: #0c5460;
-}
-
-/* Loading no modal */
-.modal-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-/* Estilos para campos de telefone */
-.phone-input {
-  font-family: 'Courier New', monospace;
-  letter-spacing: 0.05em;
-}
-
-/* Responsividade para o modal */
-@media (max-width: 600px) {
   .p-dialog {
     width: 95% !important;
     margin: 0 auto;
   }
   
+  .tracking-info-box {
+    font-size: 14px;
+  }
+  
   .template-buttons {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
   
   .template-buttons .p-button {
     width: 100%;
+    justify-content: center;
+  }
+
+  .grid.grid-cols-1.md\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .whatsapp-box {
+    max-width: 100%;
   }
 }
-  
-  
+
+@media (max-width: 600px) {
+  .p-dialog {
+    width: 95% !important;
+    margin: 0 auto;
+  }
+}
+
+/* ===========================================
+   11. UTILITÁRIOS GERAIS
+   =========================================== */
+.p-5 {
+  padding: 2rem;
+}
+
+/* Melhorar espaçamento entre seções */
+.template-form > div {
+  margin-bottom: 1rem;
+}
+
+.template-form > div:last-child {
+  margin-bottom: 0;
+}
+
+/* Tooltip customizado */
+.tracking-button-tooltip {
+  font-size: 12px;
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.tracking-button:hover .tracking-button-tooltip {
+  opacity: 1;
+}
+
+/* ===========================================
+   12. CORREÇÕES DE CONFLITOS
+   =========================================== */
+/* Garantir que não há sobreposição de estilos */
+.template-buttons:not(.emoji-toolbar) {
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+/* Correção para botões de variáveis */
+.template-buttons .p-button-sm {
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Garantir consistência nos inputs */
+.p-inputtext,
+.p-inputtextarea {
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  transition: border-color 0.2s ease;
+}
+
+.p-inputtext:focus,
+.p-inputtextarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ===========================================
+   13. CLEAN UP - REMOÇÃO DE DUPLICATAS
+   =========================================== */
+/* Todos os estilos duplicados foram removidos e organizados
+   em suas respectivas seções acima */
