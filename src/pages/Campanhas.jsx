@@ -13,6 +13,8 @@ import { FilterMatchMode } from 'primereact/api';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Card } from 'primereact/card';
+import { Badge } from 'primereact/badge';
 import "../styles/campanhas.css";
 
 export default function Campanhas() {
@@ -32,21 +34,24 @@ export default function Campanhas() {
     const toast = useRef(null);
 
     const statusOptions = [
-        { label: 'Agendada', value: 'agendada' },
-        { label: 'Em Execução', value: 'emexecucao' },
-        { label: 'Pausada', value: 'pausada' },
-        { label: 'Finalizada', value: 'finalizada' }
+        { label: 'Agendada', value: 'agendada', icon: '🕐', color: 'info' },
+        { label: 'Em Execução', value: 'emexecucao', icon: '🚀', color: 'warning' },
+        { label: 'Pausada', value: 'pausada', icon: '⏸️', color: 'secondary' },
+        { label: 'Finalizada', value: 'finalizada', icon: '✅', color: 'success' }
     ];
 
-    const getStatusTag = (status) => {
-        const map = {
-            agendada: 'info',
-            pausada: 'secondary',
-            emexecucao: 'warning',
-            finalizada: 'success'
-        };
-        return map[status] || 'secondary';
+    const getStatusConfig = (status) => {
+        return statusOptions.find(s => s.value === status) || 
+               { label: 'Desconhecido', icon: '❓', color: 'secondary' };
     };
+
+    // Stats para o header
+    const [stats, setStats] = useState({
+        total: 0,
+        ativas: 0,
+        pausadas: 0,
+        finalizadas: 0
+    });
 
     // ✅ Buscar campanhas do banco
     const buscarCampanhas = async () => {
@@ -59,6 +64,16 @@ export default function Campanhas() {
                 data_finalizacao: c.data_finalizacao ? new Date(c.data_finalizacao) : null
             }));
             setCampanhas(campanhasComDatas);
+            
+            // Calcular stats
+            const newStats = {
+                total: campanhasComDatas.length,
+                ativas: campanhasComDatas.filter(c => c.status === 'emexecucao').length,
+                pausadas: campanhasComDatas.filter(c => c.status === 'pausada').length,
+                finalizadas: campanhasComDatas.filter(c => c.status === 'finalizada').length
+            };
+            setStats(newStats);
+            
         } catch (err) {
             console.error('Erro ao buscar campanhas:', err);
             toast.current.show({
@@ -94,7 +109,7 @@ export default function Campanhas() {
         buscarCampanhas();
         buscarStatusCampanhas();
         
-        // Atualizar a cada 10 segundos
+        // Atualizar a cada 1 minuto
         const interval = setInterval(() => {
             buscarCampanhas();
             buscarStatusCampanhas();
@@ -103,37 +118,35 @@ export default function Campanhas() {
         return () => clearInterval(interval);
     }, []);
 
-    // ✅ INICIAR CAMPANHA - Nova API Z-API
+    // ✅ INICIAR CAMPANHA
     const iniciarCampanha = async (campanhaId) => {
         const campanha = campanhas.find(c => c.id === campanhaId);
         
         if (!campanha) {
             toast.current.show({
                 severity: "error",
-                summary: "Erro",
+                summary: "❌ Erro",
                 detail: "Campanha não encontrada",
                 life: 3000,
             });
             return;
         }
 
-        // Verificar se campanha pode ser iniciada
         if (!['agendada', 'pausada'].includes(campanha.status)) {
             toast.current.show({
                 severity: "warn",
-                summary: "Ação Inválida",
+                summary: "⚠️ Ação Inválida",
                 detail: `Campanha não pode ser iniciada. Status atual: ${campanha.status}`,
                 life: 4000,
             });
             return;
         }
 
-        // Verificar se já está rodando
         const statusCache = statusCampanhas[campanhaId];
         if (statusCache?.is_running) {
             toast.current.show({
                 severity: "warn",
-                summary: "Campanha Ativa",
+                summary: "⚠️ Campanha Ativa",
                 detail: "Esta campanha já está em execução",
                 life: 3000,
             });
@@ -142,15 +155,17 @@ export default function Campanhas() {
 
         confirmDialog({
             message: `Deseja iniciar a campanha "${campanha.nome}"?`,
-            header: 'Confirmar Início',
+            header: '🚀 Confirmar Início',
             icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Sim, Iniciar',
+            rejectLabel: 'Cancelar',
             accept: async () => {
                 try {
                     setLoading(true);
                     
                     toast.current.show({
                         severity: "info",
-                        summary: "Iniciando Campanha",
+                        summary: "🔄 Iniciando Campanha",
                         detail: "Preparando disparo das mensagens...",
                         life: 3000,
                     });
@@ -159,12 +174,11 @@ export default function Campanhas() {
                     
                     toast.current.show({
                         severity: "success",
-                        summary: "Campanha Iniciada",
+                        summary: "✅ Campanha Iniciada",
                         detail: "O processo de envio foi iniciado com sucesso!",
                         life: 4000,
                     });
 
-                    // Atualizar dados
                     await buscarCampanhas();
                     await buscarStatusCampanhas();
                     
@@ -172,7 +186,7 @@ export default function Campanhas() {
                     console.error('Erro ao iniciar campanha:', err);
                     toast.current.show({
                         severity: "error",
-                        summary: "Erro ao Iniciar",
+                        summary: "❌ Erro ao Iniciar",
                         detail: err.response?.data?.erro || "Erro inesperado ao iniciar campanha",
                         life: 5000,
                     });
@@ -183,26 +197,25 @@ export default function Campanhas() {
         });
     };
 
-    // ✅ PAUSAR CAMPANHA - Nova API Z-API
+    // ✅ PAUSAR CAMPANHA
     const pausarCampanha = async (campanhaId) => {
         const campanha = campanhas.find(c => c.id === campanhaId);
         
         if (!campanha) {
             toast.current.show({
                 severity: "error",
-                summary: "Erro",
+                summary: "❌ Erro",
                 detail: "Campanha não encontrada",
                 life: 3000,
             });
             return;
         }
 
-        // Verificar se campanha está rodando
         const statusCache = statusCampanhas[campanhaId];
         if (!statusCache?.is_running) {
             toast.current.show({
                 severity: "warn",
-                summary: "Ação Inválida",
+                summary: "⚠️ Ação Inválida",
                 detail: "Esta campanha não está em execução",
                 life: 3000,
             });
@@ -211,8 +224,10 @@ export default function Campanhas() {
 
         confirmDialog({
             message: `Deseja pausar a campanha "${campanha.nome}"?`,
-            header: 'Confirmar Pausa',
+            header: '⏸️ Confirmar Pausa',
             icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Sim, Pausar',
+            rejectLabel: 'Cancelar',
             accept: async () => {
                 try {
                     setLoading(true);
@@ -221,12 +236,11 @@ export default function Campanhas() {
                     
                     toast.current.show({
                         severity: "warn",
-                        summary: "Campanha Pausada",
+                        summary: "⏸️ Campanha Pausada",
                         detail: "Disparo pausado com sucesso!",
                         life: 3000,
                     });
 
-                    // Atualizar dados
                     await buscarCampanhas();
                     await buscarStatusCampanhas();
                     
@@ -234,7 +248,7 @@ export default function Campanhas() {
                     console.error('Erro ao pausar campanha:', err);
                     toast.current.show({
                         severity: "error",
-                        summary: "Erro ao Pausar",
+                        summary: "❌ Erro ao Pausar",
                         detail: err.response?.data?.erro || "Erro inesperado ao pausar campanha",
                         life: 4000,
                     });
@@ -253,8 +267,10 @@ export default function Campanhas() {
 
         confirmDialog({
             message: `Deseja finalizar definitivamente a campanha "${campanha.nome}"? Esta ação não pode ser desfeita.`,
-            header: 'Confirmar Finalização',
+            header: '🛑 Confirmar Finalização',
             icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Sim, Finalizar',
+            rejectLabel: 'Cancelar',
             accept: async () => {
                 try {
                     setLoading(true);
@@ -263,12 +279,11 @@ export default function Campanhas() {
                     
                     toast.current.show({
                         severity: "success",
-                        summary: "Campanha Finalizada",
+                        summary: "✅ Campanha Finalizada",
                         detail: "Campanha finalizada com sucesso!",
                         life: 3000,
                     });
 
-                    // Atualizar dados
                     await buscarCampanhas();
                     await buscarStatusCampanhas();
                     
@@ -276,7 +291,7 @@ export default function Campanhas() {
                     console.error('Erro ao finalizar campanha:', err);
                     toast.current.show({
                         severity: "error",
-                        summary: "Erro ao Finalizar",
+                        summary: "❌ Erro ao Finalizar",
                         detail: err.response?.data?.erro || "Erro inesperado",
                         life: 4000,
                     });
@@ -291,8 +306,10 @@ export default function Campanhas() {
     const pausarTodasCampanhas = async () => {
         confirmDialog({
             message: 'Deseja pausar TODAS as campanhas ativas?',
-            header: 'Pausar Todas',
+            header: '⏸️ Pausar Todas',
             icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Sim, Pausar Todas',
+            rejectLabel: 'Cancelar',
             accept: async () => {
                 try {
                     setLoading(true);
@@ -301,12 +318,11 @@ export default function Campanhas() {
                     
                     toast.current.show({
                         severity: "warn",
-                        summary: "Campanhas Pausadas",
+                        summary: "⏸️ Campanhas Pausadas",
                         detail: "Todas as campanhas ativas foram pausadas!",
                         life: 3000,
                     });
 
-                    // Atualizar dados
                     await buscarCampanhas();
                     await buscarStatusCampanhas();
                     
@@ -314,7 +330,7 @@ export default function Campanhas() {
                     console.error('Erro ao pausar todas:', err);
                     toast.current.show({
                         severity: "error",
-                        summary: "Erro",
+                        summary: "❌ Erro",
                         detail: err.response?.data?.erro || "Erro inesperado",
                         life: 4000,
                     });
@@ -325,26 +341,54 @@ export default function Campanhas() {
         });
     };
 
-    // ✅ Template de status com indicador de execução
+    // ✅ Template de status melhorado
     const statusBodyTemplate = (rowData) => {
-        const label = statusOptions.find(s => s.value === rowData.status)?.label || 'Desconhecido';
+        const statusConfig = getStatusConfig(rowData.status);
         const statusCache = statusCampanhas[rowData.id];
         
         return (
-            <div className="flex align-items-center gap-2">
-                <Tag value={label} severity={getStatusTag(rowData.status)} />
-                {statusCache?.is_running && (
-                    <i className="pi pi-spin pi-spinner text-orange-500" title="Executando em background" />
-                )}
-                {statusCache?.is_paused && statusCache?.is_running && (
-                    <i className="pi pi-pause text-yellow-500" title="Pausada temporariamente" />
+            <div className="status-container">
+                <Tag 
+                    value={`${statusConfig.icon} ${statusConfig.label}`} 
+                    severity={statusConfig.color}
+                    className="status-tag"
+                />
+                <div className="status-indicators">
+                    {statusCache?.is_running && (
+                        <Badge 
+                            value="●" 
+                            severity="warning" 
+                            className="running-indicator"
+                            title="Executando em background"
+                        />
+                    )}
+                    {statusCache?.is_paused && statusCache?.is_running && (
+                        <Badge 
+                            value="⏸" 
+                            severity="secondary" 
+                            className="paused-indicator"
+                            title="Pausada temporariamente"
+                        />
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    // ✅ Template de nome com mais destaque
+    const nomeBodyTemplate = (rowData) => {
+        return (
+            <div className="nome-container">
+                <div className="nome-principal">{rowData.nome}</div>
+                {rowData.descricao && (
+                    <div className="nome-descricao">{rowData.descricao}</div>
                 )}
             </div>
         );
     };
 
     const statusItemTemplate = (option) => {
-        return <Tag value={option.label} severity={getStatusTag(option.value)} />;
+        return <Tag value={`${option.icon} ${option.label}`} severity={option.color} />;
     };
 
     const statusFilterTemplate = (options) => {
@@ -393,40 +437,45 @@ export default function Campanhas() {
 
     const renderHeader = () => {
         return (
-            <div className="flex justify-between align-items-center">
-                <IconField iconPosition="left">
-                    <InputIcon className="pi pi-search" />
-                    <InputText
-                        value={filters.global?.value || ""}
-                        onChange={onGlobalFilterChange}
-                        placeholder="Buscar campanhas..."
-                    />
-                </IconField>
+            <div className="table-header">
+                <div className="search-container">
+                    <IconField iconPosition="left">
+                        <InputIcon className="pi pi-search" />
+                        <InputText
+                            value={filters.global?.value || ""}
+                            onChange={onGlobalFilterChange}
+                            placeholder="🔍 Buscar campanhas..."
+                            className="search-input"
+                        />
+                    </IconField>
+                </div>
                 
-                <Button
-                    label="Pausar Todas"
-                    icon="pi pi-pause"
-                    className="p-button-warning p-button-outlined"
-                    onClick={pausarTodasCampanhas}
-                    disabled={loading}
-                />
+                <div className="header-actions">
+                    <Button
+                        label="⏸️ Pausar Todas"
+                        className="pause-all-btn"
+                        onClick={pausarTodasCampanhas}
+                        disabled={loading || stats.ativas === 0}
+                        tooltip="Pausar todas as campanhas ativas"
+                    />
+                </div>
             </div>
         );
     };
 
-    // ✅ Template de ações com botões condicionais
+    // ✅ Template de ações melhorado
     const actionsBodyTemplate = (rowData) => {
         const statusCache = statusCampanhas[rowData.id];
         const isRunning = statusCache?.is_running || false;
         const isPaused = statusCache?.is_paused || false;
         
         return (
-            <div className="flex gap-2">
+            <div className="actions-container">
                 {/* Botão Editar */}
                 <Button 
                     icon="pi pi-pencil" 
-                    className="p-button-rounded p-button-warning" 
-                    tooltip="Editar"
+                    className="action-btn edit-btn" 
+                    tooltip="Editar Campanha"
                     disabled={isRunning}
                     onClick={() => {
                         localStorage.setItem("campanhaId", rowData.id);
@@ -438,7 +487,7 @@ export default function Campanhas() {
                 {(!isRunning || isPaused) && ['agendada', 'pausada'].includes(rowData.status) && (
                     <Button 
                         icon="pi pi-play" 
-                        className="p-button-rounded p-button-success" 
+                        className="action-btn start-btn" 
                         tooltip={isPaused ? "Retomar Campanha" : "Iniciar Campanha"}
                         disabled={loading}
                         onClick={() => iniciarCampanha(rowData.id)} 
@@ -449,7 +498,7 @@ export default function Campanhas() {
                 {isRunning && !isPaused && (
                     <Button 
                         icon="pi pi-pause" 
-                        className="p-button-rounded p-button-warning" 
+                        className="action-btn pause-btn" 
                         tooltip="Pausar Campanha"
                         disabled={loading}
                         onClick={() => pausarCampanha(rowData.id)} 
@@ -460,7 +509,7 @@ export default function Campanhas() {
                 {(isRunning || ['agendada', 'pausada'].includes(rowData.status)) && (
                     <Button 
                         icon="pi pi-stop" 
-                        className="p-button-rounded p-button-danger" 
+                        className="action-btn stop-btn" 
                         tooltip="Finalizar Campanha"
                         disabled={loading}
                         onClick={() => finalizarCampanha(rowData.id)} 
@@ -470,7 +519,7 @@ export default function Campanhas() {
                 {/* Botão Analytics */}
                 <Button 
                     icon="pi pi-chart-bar" 
-                    className="p-button-rounded p-button-info" 
+                    className="action-btn analytics-btn" 
                     tooltip="Ver Analytics"
                     onClick={() => navigate(`/analytics/campanha/${rowData.id}`)} 
                 />
@@ -479,92 +528,138 @@ export default function Campanhas() {
     };
 
     return (
-        <div className="p-4">
+        <div className="campanhas-wrapper">
             <Toast ref={toast} />
             <ConfirmDialog />
 
-            <div className="header-campanhas-title mb-3 flex justify-between items-center">
-                <h2>Campanhas</h2>
-                <Button
-                    label="Criar Campanha"
-                    icon="pi pi-plus"
-                    className="p-button-primary"
-                    onClick={() => navigate("/nova-campanha")}
-                />
+            {/* Header com título e stats */}
+            <div className="page-header">
+                <div className="header-content">
+                    <div className="title-section">
+                        <h1>🚀 Campanhas</h1>
+                        <p>Gerencie e monitore suas campanhas de WhatsApp</p>
+                    </div>
+                    
+                    <Button
+                        label="➕ Nova Campanha"
+                        className="create-btn"
+                        onClick={() => navigate("/nova-campanha")}
+                    />
+                </div>
+
+                {/* Cards de estatísticas */}
+                <div className="stats-cards">
+                    <Card className="stat-card total">
+                        <div className="stat-content">
+                            <div className="stat-icon">📊</div>
+                            <div className="stat-info">
+                                <div className="stat-value">{stats.total}</div>
+                                <div className="stat-label">Total</div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card className="stat-card active">
+                        <div className="stat-content">
+                            <div className="stat-icon">🚀</div>
+                            <div className="stat-info">
+                                <div className="stat-value">{stats.ativas}</div>
+                                <div className="stat-label">Ativas</div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card className="stat-card paused">
+                        <div className="stat-content">
+                            <div className="stat-icon">⏸️</div>
+                            <div className="stat-info">
+                                <div className="stat-value">{stats.pausadas}</div>
+                                <div className="stat-label">Pausadas</div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card className="stat-card finished">
+                        <div className="stat-content">
+                            <div className="stat-icon">✅</div>
+                            <div className="stat-info">
+                                <div className="stat-value">{stats.finalizadas}</div>
+                                <div className="stat-label">Finalizadas</div>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
             </div>
 
-            <DataTable
-                value={campanhas}
-                loading={loading}
-                paginator
-                rows={10}
-                filters={filters}
-                onFilter={(e) => setFilters(e.filters)}
-                globalFilterFields={['nome', 'descricao', 'status', 'data_criacao']}
-                header={renderHeader()}
-                responsiveLayout="scroll"
-                emptyMessage="Nenhuma campanha encontrada."
-                stripedRows
-            >
-                <Column 
-                    field="nome" 
-                    header="Nome" 
-                    showFilterMatchModes={false} 
-                    sortable 
-                    filter 
-                    filterPlaceholder="Filtrar por nome" 
-                    style={{ minWidth: '20rem' }} 
-                />
-                
-                <Column 
-                    field="descricao" 
-                    header="Descrição" 
-                    showFilterMatchModes={false} 
-                    sortable 
-                    filter 
-                    filterPlaceholder="Filtrar por descrição" 
-                    style={{ minWidth: '10rem' }} 
-                />
-                
-                <Column  
-                    field="data_criacao" 
-                    header="Criada em" 
-                    sortable 
-                    filter  
-                    dataType="date" 
-                    filterElement={dateFilterTemplate} 
-                    body={(rowData) => formatDate(rowData.data_criacao)} 
-                    style={{ minWidth: "8rem" }} 
-                />
-                
-                <Column 
-                    field="data_finalizacao" 
-                    header="Finalizada em" 
-                    sortable 
-                    filter  
-                    dataType="date" 
-                    filterElement={dateFilterTemplate} 
-                    body={(rowData) => formatDate(rowData.data_finalizacao)} 
-                    style={{ minWidth: '8rem' }} 
-                />
-                
-                <Column 
-                    field="status" 
-                    header="Status" 
-                    showFilterMatchModes={false} 
-                    sortable 
-                    filter 
-                    filterElement={statusFilterTemplate} 
-                    body={statusBodyTemplate} 
-                    style={{ minWidth: '12rem' }} 
-                />
-                
-                <Column
-                    header="Ações"
-                    body={actionsBodyTemplate}
-                    style={{ minWidth: '18rem' }}
-                />
-            </DataTable>
+            {/* Tabela de campanhas */}
+            <Card className="table-card">
+                <DataTable
+                    value={campanhas}
+                    loading={loading}
+                    paginator
+                    rows={10}
+                    filters={filters}
+                    onFilter={(e) => setFilters(e.filters)}
+                    globalFilterFields={['nome', 'descricao', 'status', 'data_criacao']}
+                    header={renderHeader()}
+                    responsiveLayout="scroll"
+                    emptyMessage="📭 Nenhuma campanha encontrada."
+                    stripedRows
+                    className="modern-table"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    currentPageReportTemplate="Exibindo {first} a {last} de {totalRecords} campanhas"
+                >
+                    <Column 
+                        field="nome" 
+                        header="📋 Campanha" 
+                        body={nomeBodyTemplate}
+                        showFilterMatchModes={false} 
+                        sortable 
+                        filter 
+                        filterPlaceholder="Filtrar por nome" 
+                        style={{ minWidth: '20rem' }} 
+                    />
+                    
+                    <Column  
+                        field="data_criacao" 
+                        header="📅 Criada em" 
+                        sortable 
+                        filter  
+                        dataType="date" 
+                        filterElement={dateFilterTemplate} 
+                        body={(rowData) => formatDate(rowData.data_criacao)} 
+                        style={{ minWidth: "10rem" }} 
+                    />
+                    
+                    <Column 
+                        field="data_finalizacao" 
+                        header="🏁 Finalizada em" 
+                        sortable 
+                        filter  
+                        dataType="date" 
+                        filterElement={dateFilterTemplate} 
+                        body={(rowData) => formatDate(rowData.data_finalizacao)} 
+                        style={{ minWidth: '10rem' }} 
+                    />
+                    
+                    <Column 
+                        field="status" 
+                        header="📊 Status" 
+                        showFilterMatchModes={false} 
+                        sortable 
+                        filter 
+                        filterElement={statusFilterTemplate} 
+                        body={statusBodyTemplate} 
+                        style={{ minWidth: '12rem' }} 
+                    />
+                    
+                    <Column
+                        header="⚙️ Ações"
+                        body={actionsBodyTemplate}
+                        style={{ minWidth: '16rem' }}
+                    />
+                </DataTable>
+            </Card>
         </div>
     );
 }

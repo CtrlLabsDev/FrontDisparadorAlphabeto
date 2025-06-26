@@ -1,20 +1,625 @@
-.header-campanhas-title {
-    display: flex;
-    justify-content: space-between; /* separa input à esquerda e botão à direita */
-    align-items: center;            /* alinha verticalmente */
-    margin-bottom: 10px;
+/* ==================================================
+   CAMPANHAS.CSS - DESIGN MODERNO E RESPONSIVO
+   ================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ===========================================
+   1. LAYOUT PRINCIPAL
+   =========================================== */
+.campanhas-wrapper {
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-.header-campanhas-input {
-    flex: 1;                        /* ocupa o espaço disponível */
-    margin-right: 10px;             /* espaço entre input e botão */
+/* ===========================================
+   2. HEADER DA PÁGINA
+   =========================================== */
+.page-header {
+  margin-bottom: 2rem;
 }
 
-.header-campanhas-input .p-inputtext {
-    height: 46px;                   /* altura igual ao botão */
-    font-size: 16px;                /* opcional, ajuste conforme gosto */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.header-campanhas-button {
-    flex-shrink: 0;                 /* impede o botão de encolher */
+.title-section h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-section p {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.create-btn {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+  border: none !important;
+  border-radius: 16px !important;
+  padding: 0.875rem 2rem !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.create-btn:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4) !important;
+}
+
+.create-btn:active {
+  transform: translateY(-1px) !important;
+}
+
+/* ===========================================
+   3. CARDS DE ESTATÍSTICAS
+   =========================================== */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(226, 232, 240, 0.5) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card.total::before { background: linear-gradient(90deg, #64748b, #94a3b8); }
+.stat-card.active::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.stat-card.paused::before { background: linear-gradient(90deg, #6b7280, #9ca3af); }
+.stat-card.finished::before { background: linear-gradient(90deg, #10b981, #34d399); }
+
+.stat-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+.stat-content {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.stat-card.total .stat-icon { background: rgba(100, 116, 139, 0.1); }
+.stat-card.active .stat-icon { background: rgba(245, 158, 11, 0.1); }
+.stat-card.paused .stat-icon { background: rgba(107, 114, 128, 0.1); }
+.stat-card.finished .stat-icon { background: rgba(16, 185, 129, 0.1); }
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===========================================
+   4. TABELA E CARD PRINCIPAL
+   =========================================== */
+.table-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(226, 232, 240, 0.5) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04) !important;
+  overflow: hidden !important;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 280px;
+}
+
+.search-input {
+  width: 100% !important;
+  padding: 0.875rem 1rem 0.875rem 2.5rem !important;
+  border-radius: 16px !important;
+  border: 2px solid #e2e8f0 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.search-input:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+  background: white !important;
+  transform: translateY(-1px) !important;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.pause-all-btn {
+  background: rgba(251, 191, 36, 0.1) !important;
+  border: 2px solid #fbbf24 !important;
+  color: #f59e0b !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.pause-all-btn:hover:not(:disabled) {
+  background: #fbbf24 !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3) !important;
+}
+
+.pause-all-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* ===========================================
+   5. TABELA PERSONALIZADA
+   =========================================== */
+.modern-table {
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.modern-table .p-datatable-header {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.modern-table .p-datatable-thead > tr > th {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+  border: none !important;
+  color: #475569 !important;
+  font-weight: 700 !important;
+  padding: 1.25rem 1rem !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.modern-table .p-datatable-tbody > tr {
+  transition: all 0.2s ease !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5) !important;
+}
+
+.modern-table .p-datatable-tbody > tr:hover {
+  background: rgba(99, 102, 241, 0.05) !important;
+  transform: translateX(4px) !important;
+}
+
+.modern-table .p-datatable-tbody > tr > td {
+  border: none !important;
+  padding: 1.25rem 1rem !important;
+  vertical-align: middle !important;
+}
+
+/* ===========================================
+   6. TEMPLATES DE COLUNAS
+   =========================================== */
+
+/* Nome da campanha */
+.nome-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.nome-principal {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.nome-descricao {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.4;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Status */
+.status-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.status-tag {
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  padding: 0.5rem 0.875rem !important;
+  border-radius: 12px !important;
+}
+
+.status-indicators {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.running-indicator,
+.paused-indicator {
+  animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===========================================
+   7. BOTÕES DE AÇÃO
+   =========================================== */
+.actions-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  border: none !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.action-btn:hover::before {
+  left: 100%;
+}
+
+.action-btn:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.action-btn:active {
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* Cores específicas dos botões */
+.edit-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+  color: white !important;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
+  color: white !important;
+}
+
+.pause-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+  color: white !important;
+}
+
+.stop-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%) !important;
+  color: white !important;
+}
+
+.analytics-btn {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+  color: white !important;
+}
+
+.action-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* ===========================================
+   8. RESPONSIVIDADE
+   =========================================== */
+@media (max-width: 1024px) {
+  .stats-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .create-btn {
+    align-self: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .campanhas-wrapper {
+    padding: 1rem;
+  }
+  
+  .title-section h1 {
+    font-size: 2rem;
+  }
+  
+  .stats-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stat-content {
+    padding: 1.25rem;
+  }
+  
+  .stat-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+  }
+  
+  .table-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .search-container {
+    min-width: auto;
+  }
+  
+  .header-actions {
+    justify-content: center;
+  }
+  
+  .actions-container {
+    justify-content: center;
+  }
+  
+  .action-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  /* Ocultar descrição em mobile */
+  .nome-descricao {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .title-section h1 {
+    font-size: 1.75rem;
+  }
+  
+  .stat-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+  
+  .stat-value {
+    font-size: 1.75rem;
+  }
+  
+  .create-btn {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .pause-all-btn {
+    padding: 0.625rem 1.25rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .actions-container {
+    gap: 0.375rem;
+  }
+  
+  .action-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* ===========================================
+   9. LOADING E ANIMAÇÕES
+   =========================================== */
+.p-datatable .p-datatable-loading-overlay {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.p-progressspinner {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+/* ===========================================
+   10. FILTROS E DROPDOWN
+   =========================================== */
+.p-dropdown {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.p-dropdown:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+}
+
+.p-calendar .p-inputtext {
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.p-calendar .p-inputtext:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+}
+
+/* ===========================================
+   11. PAGINADOR
+   =========================================== */
+.p-paginator {
+  background: transparent !important;
+  border: none !important;
+  padding: 1rem 0 !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  border-radius: 8px !important;
+  margin: 0 0.25rem !important;
+  min-width: 36px !important;
+  height: 36px !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #6366f1 !important;
+  border-color: #6366f1 !important;
+}
+
+/* ===========================================
+   12. CUSTOMIZAÇÃO DE TAGS
+   =========================================== */
+.p-tag {
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  padding: 0.375rem 0.75rem !important;
+}
+
+.p-tag.p-tag-info {
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%) !important;
+}
+
+.p-tag.p-tag-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+}
+
+.p-tag.p-tag-success {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
+}
+
+.p-tag.p-tag-secondary {
+  background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%) !important;
+}
+
+/* ===========================================
+   13. EFEITOS VISUAIS AVANÇADOS
+   =========================================== */
+
+/* Fundo com gradiente sutil */
+.campanhas-wrapper::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Smooth scrolling */
+.campanhas-wrapper {
+  scroll-behavior: smooth;
+}
+
+/* Performance optimizations */
+.stat-card,
+.action-btn,
+.create-btn {
+  will-change: transform;
+  transform: translateZ(0);
 }

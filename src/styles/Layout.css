@@ -1,86 +1,223 @@
 /* ==================================================
-   LAYOUT.CSS - ORGANIZAÇÃO PRINCIPAL
+   LAYOUT-FIX.CSS - CORREÇÕES ESPECÍFICAS
    ================================================== */
 
-/* Layout principal */
-.app-layout {
-  display: flex;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+/* Importar este CSS APÓS o menu.css e home.css */
+
+/* ===========================================
+   1. CORREÇÕES GLOBAIS DE LAYOUT
+   =========================================== */
+
+/* Reset de margin/padding que pode conflitar */
+* {
+  box-sizing: border-box;
 }
 
-/* Conteúdo principal */
-.app-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Wrapper do conteúdo */
-.content-wrapper {
-  flex: 1;
+html, body {
+  margin: 0;
+  padding: 0;
   width: 100%;
-  max-width: 100%;
   overflow-x: hidden;
 }
 
 /* ===========================================
-   RESPONSIVIDADE
+   2. LAYOUT DESKTOP
    =========================================== */
-
-/* Desktop - com sidebar */
 @media (min-width: 769px) {
-  .app-content {
-    margin-left: 280px; /* largura da sidebar */
-  }
-}
-
-/* Mobile - com header */
-@media (max-width: 768px) {
-  .app-layout {
-    flex-direction: column;
+  /* Ajustar body para sidebar fixa */
+  body {
+    margin-left: 280px;
+    transition: margin-left 0.3s ease;
   }
   
-  .app-content {
-    margin-left: 0;
-    padding-top: 64px; /* altura do header mobile */
+  /* Garantir que home-wrapper não tenha margin extra */
+  .home-wrapper {
+    margin-left: 0 !important;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
   
-  .content-wrapper {
-    padding: 0;
+  /* Esconder elementos mobile */
+  .mobile-header {
+    display: none !important;
   }
-}
-
-/* Tablets */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .app-content {
-    margin-left: 260px; /* sidebar um pouco menor */
+  
+  .drawer-overlay {
+    display: none !important;
   }
-}
-
-/* Telas muito grandes */
-@media (min-width: 1400px) {
-  .content-wrapper {
-    max-width: 1400px;
-    margin: 0 auto;
+  
+  .menu-lateral.mobile {
+    display: none !important;
   }
 }
 
 /* ===========================================
-   OTIMIZAÇÕES DE PERFORMANCE
+   3. LAYOUT MOBILE
+   =========================================== */
+@media (max-width: 768px) {
+  /* Remover margin do body */
+  body {
+    margin-left: 0 !important;
+    padding-top: 64px; /* Altura do header mobile */
+  }
+  
+  /* Ajustar home-wrapper para mobile */
+  .home-wrapper {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    padding: 1rem;
+    min-height: calc(100vh - 64px);
+  }
+  
+  /* Esconder sidebar desktop */
+  .menu-lateral.desktop {
+    display: none !important;
+  }
+  
+  /* Garantir que header mobile apareça */
+  .mobile-header {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+  }
+}
+
+/* ===========================================
+   4. CORREÇÕES ESPECÍFICAS DOS CARDS
    =========================================== */
 
-/* Usar GPU para animações */
-.app-content,
-.content-wrapper {
-  will-change: transform;
-  transform: translateZ(0);
+/* Garantir que cards não quebrem */
+.dashboard-cards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
-/* Otimizar scrolling */
-.app-content {
-  -webkit-overflow-scrolling: touch;
+@media (max-width: 768px) {
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* ===========================================
+   5. CORREÇÕES DO GRÁFICO
+   =========================================== */
+
+.chart-card-full {
+  width: 100%;
+  overflow: hidden;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    height: 300px;
+  }
+}
+
+/* ===========================================
+   6. CORREÇÕES DE Z-INDEX
+   =========================================== */
+
+/* Garantir hierarquia correta */
+.mobile-header {
+  z-index: 1001;
+}
+
+.drawer-overlay {
+  z-index: 1002;
+}
+
+.menu-lateral.mobile {
+  z-index: 1003;
+}
+
+.menu-lateral.desktop {
+  z-index: 1000;
+}
+
+/* ===========================================
+   7. CORREÇÕES DE SCROLL
+   =========================================== */
+
+/* Evitar scroll horizontal */
+body, html {
+  overflow-x: hidden;
+}
+
+/* Scroll suave */
+html {
   scroll-behavior: smooth;
 }
+
+/* ===========================================
+   8. TRANSIÇÕES SUAVES
+   =========================================== */
+
+body {
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.home-wrapper {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===========================================
+   9. FORÇA LAYOUTS ESPECÍFICOS
+   =========================================== */
+
+/* Force desktop layout */
+@media (min-width: 769px) {
+  .mobile-header,
+  .drawer-overlay,
+  .menu-lateral.mobile {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  .menu-lateral.desktop {
+    display: flex !important;
+    visibility: visible !important;
+  }
+}
+
+/* Force mobile layout */
+@media (max-width: 768px) {
+  .menu-lateral.desktop {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  .mobile-header {
+    display: flex !important;
+    visibility: visible !important;
+  }
+}
+
+/* ===========================================
+   10. DEBUG (REMOVER EM PRODUÇÃO)
+   =========================================== */
+
+/*
+.menu-lateral.desktop {
+  border: 2px solid red !important;
+}
+
+.mobile-header {
+  border: 2px solid blue !important;
+}
+
+.home-wrapper {
+  border: 2px solid green !important;
+}
+*/

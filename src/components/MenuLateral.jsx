@@ -7,7 +7,7 @@ export default function MenuLateral() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Menu items
   const menu = [
@@ -20,19 +20,31 @@ export default function MenuLateral() {
 
   // Detectar mudanças no tamanho da tela
   useEffect(() => {
-    const handleResize = () => {
+    const checkIsMobile = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      if (!mobile) {
-        setIsOpen(false); // Fechar drawer quando voltar ao desktop
+      if (!mobile && isOpen) {
+        setIsOpen(false);
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, [isOpen]);
 
-  // Fechar menu ao clicar em um link (mobile)
+  // Fechar menu ao clicar fora (ESC key)
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen]);
+
   const handleLinkClick = () => {
     if (isMobile) {
       setIsOpen(false);
@@ -48,95 +60,78 @@ export default function MenuLateral() {
     }
   };
 
-  // Mobile Header
-  const MobileHeader = () => (
-    <header className="mobile-header">
-      <button 
-        className="menu-toggle"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle menu"
-      >
-        <i className={`pi ${isOpen ? 'pi-times' : 'pi-bars'}`}></i>
-      </button>
-      
-      <div className="mobile-logo">
-        <h2>Dashboard</h2>
-      </div>
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
-      <button 
-        className="mobile-create-btn"
-        onClick={() => navigate("/nova-campanha")}
-        aria-label="Criar campanha"
-      >
-        <i className="pi pi-plus"></i>
-      </button>
-    </header>
-  );
-
-  // Desktop Sidebar
-  const DesktopSidebar = () => (
-    <aside className="menu-lateral desktop">
-      <div className="menu-top">
-        <div className="logo-section">
-          <h3>📊 Dashboard</h3>
-        </div>
-        <Button
-          label="Criar Campanha"
-          icon="pi pi-plus"
-          onClick={() => navigate("/nova-campanha")}
-          className="create-campaign-btn"
-        />
-      </div>
-
-      <nav className="menu-nav">
-        <ul className="menu-list">
-          {menu.map((item, i) => (
-            <li
-              key={i}
-              className={location.pathname === item.to ? "ativo" : ""}
-            >
-              <Link to={item.to} onClick={handleLinkClick}>
-                <i className={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="menu-bottom">
-        <button onClick={handleLogout} className="logout-button">
-          <i className="pi pi-sign-out" />
-          <span>Sair</span>
-        </button>
-      </div>
-    </aside>
-  );
-
-  // Mobile Drawer
-  const MobileDrawer = () => (
+  return (
     <>
-      {/* Overlay */}
-      {isOpen && (
+      {/* HEADER MOBILE */}
+      {isMobile && (
+        <header className="mobile-header">
+          <button 
+            className="menu-toggle"
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <i className={`pi ${isOpen ? 'pi-times' : 'pi-bars'}`}></i>
+          </button>
+          
+          <div className="mobile-logo">
+            <h2>📊 Dashboard</h2>
+          </div>
+
+          <button 
+            className="mobile-create-btn"
+            onClick={() => navigate("/nova-campanha")}
+            aria-label="Criar campanha"
+          >
+            <i className="pi pi-plus"></i>
+          </button>
+        </header>
+      )}
+
+      {/* OVERLAY MOBILE */}
+      {isMobile && isOpen && (
         <div 
-          className="drawer-overlay"
+          className="drawer-overlay active"
           onClick={() => setIsOpen(false)}
         />
       )}
       
-      {/* Drawer */}
-      <aside className={`menu-lateral mobile ${isOpen ? 'open' : ''}`}>
-        <div className="drawer-header">
-          <h3>📊 Menu</h3>
-          <button 
-            className="drawer-close"
-            onClick={() => setIsOpen(false)}
-          >
-            <i className="pi pi-times"></i>
-          </button>
-        </div>
+      {/* SIDEBAR/DRAWER */}
+      <aside className={`menu-lateral ${isMobile ? 'mobile' : 'desktop'} ${isMobile && isOpen ? 'open' : ''}`}>
+        {/* HEADER DO DRAWER (só mobile) */}
+        {isMobile && (
+          <div className="drawer-header">
+            <h3>📊 Menu</h3>
+            <button 
+              className="drawer-close"
+              onClick={() => setIsOpen(false)}
+              aria-label="Fechar menu"
+            >
+              <i className="pi pi-times"></i>
+            </button>
+          </div>
+        )}
 
-        <div className="drawer-content">
+        {/* TOPO (desktop) */}
+        {!isMobile && (
+          <div className="menu-top">
+            <div className="logo-section">
+              <h3>📊 Dashboard</h3>
+            </div>
+            <Button
+              label="Criar Campanha"
+              icon="pi pi-plus"
+              onClick={() => navigate("/nova-campanha")}
+              className="create-campaign-btn"
+            />
+          </div>
+        )}
+
+        {/* BOTÃO CRIAR (mobile) */}
+        {isMobile && (
           <div className="drawer-create-btn">
             <Button
               label="Criar Campanha"
@@ -148,42 +143,33 @@ export default function MenuLateral() {
               className="create-campaign-btn mobile"
             />
           </div>
+        )}
 
-          <nav className="menu-nav">
-            <ul className="menu-list">
-              {menu.map((item, i) => (
-                <li
-                  key={i}
-                  className={location.pathname === item.to ? "ativo" : ""}
-                >
-                  <Link to={item.to} onClick={handleLinkClick}>
-                    <i className={item.icon} />
-                    <span>{item.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+        {/* NAVEGAÇÃO */}
+        <nav className="menu-nav">
+          <ul className="menu-list">
+            {menu.map((item, i) => (
+              <li
+                key={i}
+                className={location.pathname === item.to ? "ativo" : ""}
+              >
+                <Link to={item.to} onClick={handleLinkClick}>
+                  <i className={item.icon} />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-          <div className="drawer-bottom">
-            <button onClick={handleLogout} className="logout-button">
-              <i className="pi pi-sign-out" />
-              <span>Sair</span>
-            </button>
-          </div>
+        {/* BOTTOM/LOGOUT */}
+        <div className={`${isMobile ? 'drawer-bottom' : 'menu-bottom'}`}>
+          <button onClick={handleLogout} className="logout-button">
+            <i className="pi pi-sign-out" />
+            <span>Sair</span>
+          </button>
         </div>
       </aside>
     </>
   );
-
-  if (isMobile) {
-    return (
-      <>
-        <MobileHeader />
-        <MobileDrawer />
-      </>
-    );
-  }
-
-  return <DesktopSidebar />;
 }

@@ -1,4 +1,4 @@
-// Home.jsx - Versão Melhorada e Responsiva
+// Home.jsx - Versão com Date Picker HTML Nativo (Mais Confiável)
 import { Card } from "primereact/card";
 import { Chart } from "primereact/chart";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -10,9 +10,6 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ProgressBar } from 'primereact/progressbar';
 import { Tag } from 'primereact/tag';
-import { DateRangePicker } from 'react-date-range';
-import 'react-date-range/dist/styles.css';
-import 'react-date-range/dist/theme/default.css';
 
 export default function Home() {
   const chartRef = useRef(null);
@@ -42,23 +39,20 @@ export default function Home() {
     variacao: { receita: 0, pedidos: 0 }
   });
   
-  // Estados para date picker
-  const [dataInicio, setDataInicio] = useState(null);
-  const [dataFim, setDataFim] = useState(null);
-  const [showRange, setShowRange] = useState(false);
-  const [range, setRange] = useState([{
-    startDate: new Date(),
-    endDate: new Date(),
-    key: 'selection',
-  }]);
+  // Estados para date picker (SIMPLIFICADO)
+  const [dataInicio, setDataInicio] = useState("");
+  const [dataFim, setDataFim] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [tempDataInicio, setTempDataInicio] = useState("");
+  const [tempDataFim, setTempDataFim] = useState("");
 
   // Função para obter parâmetro de período
   const getPeriodoParam = useCallback(() => {
     if (periodoSelecionado === "custom") {
       if (dataInicio && dataFim) {
-        return `custom&inicio=${dataInicio.toISOString().slice(0, 10)}&fim=${dataFim.toISOString().slice(0, 10)}`;
+        return `custom&inicio=${dataInicio}&fim=${dataFim}`;
       }
-      return null;
+      return "7 days"; // Fallback
     }
     return periodoSelecionado;
   }, [periodoSelecionado, dataInicio, dataFim]);
@@ -66,7 +60,7 @@ export default function Home() {
   // Função para carregar todos os dados
   const carregarDados = useCallback(async () => {
     const periodoParam = getPeriodoParam();
-    if (!periodoParam) return;
+    console.log('🔄 Carregando dados com período:', periodoParam);
 
     setIsLoading(true);
     
@@ -86,51 +80,46 @@ export default function Home() {
         api.get(`mensagens-por-dia/?periodo=${periodoParam}`)
       ]);
 
-      // Processar KPIs
+      // Processar respostas (mesmo código anterior)
       if (kpisResponse.status === 'fulfilled') {
-        const variacao = kpisResponse.value.data.variacao || {
-          total: 0, enviadas: 0, aguardando: 0, com_erro: 0
-        };
+        const data = kpisResponse.value.data;
+        const variacao = data.variacao || { total: 0, enviadas: 0, aguardando: 0, com_erro: 0 };
         setDadosResumo({
-          total: kpisResponse.value.data.total || 0,
-          enviadas: kpisResponse.value.data.enviadas || 0,
-          aguardando: kpisResponse.value.data.aguardando || 0,
-          com_erro: kpisResponse.value.data.com_erro || 0,
+          total: data.total || 0,
+          enviadas: data.enviadas || 0,
+          aguardando: data.aguardando || 0,
+          com_erro: data.com_erro || 0,
           variacao
         });
       }
 
-      // Processar receita
       if (receitaResponse.status === 'fulfilled') {
         setDadosReceitaConversao(receitaResponse.value.data);
       }
 
-      // Processar campanhas
       if (campanhasResponse.status === 'fulfilled') {
         setCampanhasAtivas(campanhasResponse.value.data);
       }
 
-      // Processar cards principais
       if (cardsResponse.status === 'fulfilled') {
-        const variacao = cardsResponse.value.data.variacao || {
-          mensagens_enviadas: 0, clicks: 0
-        };
+        const data = cardsResponse.value.data;
+        const variacao = data.variacao || { mensagens_enviadas: 0, clicks: 0 };
         setDadosCardsPrincipais({
-          mensagens_enviadas: cardsResponse.value.data.mensagens_enviadas || 0,
-          clicks: cardsResponse.value.data.clicks || 0,
+          mensagens_enviadas: data.mensagens_enviadas || 0,
+          clicks: data.clicks || 0,
           variacao
         });
       }
 
-      // Processar gráfico
       if (graficoResponse.status === 'fulfilled') {
+        const data = graficoResponse.value.data;
         setDadosGrafico({
-          labels: graficoResponse.value.data.labels,
+          labels: data.labels || [],
           datasets: [
             {
               type: 'line',
               label: "Receita por Dia (R$)",
-              data: graficoResponse.value.data.receitas,
+              data: data.receitas || [],
               borderColor: "#10B981",
               backgroundColor: "rgba(16, 185, 129, 0.2)",
               tension: 0.4,
@@ -143,7 +132,7 @@ export default function Home() {
               type: 'bar',
               label: "Mensagens por Dia",
               backgroundColor: "rgba(99, 102, 241, 0.8)",
-              data: graficoResponse.value.data.mensagens,
+              data: data.mensagens || [],
               borderRadius: 8,
               barThickness: 'flex',
               maxBarThickness: 50,
@@ -154,7 +143,7 @@ export default function Home() {
       }
 
     } catch (error) {
-      console.error("Erro ao carregar dados:", error);
+      console.error("❌ Erro ao carregar dados:", error);
     } finally {
       setIsLoading(false);
     }
@@ -165,25 +154,18 @@ export default function Home() {
     carregarDados();
   }, [carregarDados]);
 
-  // Opções melhoradas para o gráfico
+  // Opções do gráfico
   const opcoesBarra = {
     responsive: true,
     maintainAspectRatio: false,
-    interaction: {
-      mode: 'index',
-      intersect: false,
-    },
+    interaction: { mode: 'index', intersect: false },
     plugins: {
       legend: {
         position: 'top',
         labels: {
           usePointStyle: true,
           padding: 20,
-          font: {
-            family: 'Inter',
-            size: 12,
-            weight: 500
-          }
+          font: { family: 'Inter', size: 12, weight: 500 }
         }
       },
       tooltip: {
@@ -207,101 +189,46 @@ export default function Home() {
     },
     scales: {
       x: {
-        grid: {
-          display: false
-        },
-        ticks: {
-          font: {
-            family: 'Inter',
-            size: 11
-          }
-        }
+        grid: { display: false },
+        ticks: { font: { family: 'Inter', size: 11 } }
       },
       y: {
         type: 'linear',
         display: true,
         position: 'left',
-        title: {
-          display: true,
-          text: 'Mensagens',
-          font: {
-            family: 'Inter',
-            size: 12,
-            weight: 600
-          }
-        },
-        grid: {
-          color: 'rgba(0, 0, 0, 0.05)'
-        },
-        ticks: {
-          font: {
-            family: 'Inter',
-            size: 11
-          }
-        }
+        title: { display: true, text: 'Mensagens', font: { family: 'Inter', size: 12, weight: 600 } },
+        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+        ticks: { font: { family: 'Inter', size: 11 } }
       },
       y1: {
         type: 'linear',
         display: true,
         position: 'right',
-        grid: {
-          drawOnChartArea: false
-        },
-        title: {
-          display: true,
-          text: 'Receita (R$)',
-          font: {
-            family: 'Inter',
-            size: 12,
-            weight: 600
-          }
-        },
+        grid: { drawOnChartArea: false },
+        title: { display: true, text: 'Receita (R$)', font: { family: 'Inter', size: 12, weight: 600 } },
         ticks: {
           callback: (value) => `R$ ${value.toLocaleString('pt-BR')}`,
-          font: {
-            family: 'Inter',
-            size: 11
-          }
+          font: { family: 'Inter', size: 11 }
         }
       }
     }
   };
 
   // Funções utilitárias
-  const getVariacaoColor = (valor) => {
-    if (valor > 0) return "#10b981";
-    if (valor < 0) return "#ef4444";
-    return "#6b7280";
-  };
+  const getVariacaoColor = (valor) => valor > 0 ? "#10b981" : valor < 0 ? "#ef4444" : "#6b7280";
+  const getVariacaoBackground = (valor) => valor > 0 ? "rgba(16, 185, 129, 0.1)" : valor < 0 ? "rgba(239, 68, 68, 0.1)" : "rgba(107, 114, 128, 0.1)";
+  const formatarNumero = (numero) => new Intl.NumberFormat('pt-BR').format(numero || 0);
+  const formatarMoeda = (valor) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
 
-  const getVariacaoBackground = (valor) => {
-    if (valor > 0) return "rgba(16, 185, 129, 0.1)";
-    if (valor < 0) return "rgba(239, 68, 68, 0.1)";
-    return "rgba(107, 114, 128, 0.1)";
-  };
-
-  const formatarNumero = (numero) => {
-    return new Intl.NumberFormat('pt-BR').format(numero);
-  };
-
-  const formatarMoeda = (valor) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(valor);
-  };
-
-  // Tooltips personalizados
+  // Tooltips
   const kpiDescriptions = {
     enviadas: "Número de mensagens enviadas com sucesso no período selecionado",
     clicks: "Número total de cliques registrados nas mensagens enviadas",
-    aguardando: "Mensagens que estão na fila aguardando processamento",
-    com_erro: "Mensagens que falharam no envio por algum motivo",
     receita: "Valor total em vendas rastreadas no período",
     conversao: "Percentual de conversão baseado em mensagens enviadas vs pedidos"
   };
 
-  // Template para status das campanhas
+  // Templates para tabela
   const statusBodyTemplate = (rowData) => {
     const statusMap = {
       agendada: { color: 'info', label: 'Agendada', icon: '🕐' },
@@ -309,19 +236,10 @@ export default function Home() {
       emexecucao: { color: 'warning', label: 'Em Execução', icon: '🚀' },
       finalizada: { color: 'success', label: 'Finalizada', icon: '✅' },
     };
-    const { color, label, icon } = statusMap[rowData.status] || { 
-      color: 'secondary', label: 'Desconhecido', icon: '❓' 
-    };
-    return (
-      <Tag 
-        value={`${icon} ${label}`} 
-        severity={color}
-        style={{ fontWeight: 500 }}
-      />
-    );
+    const { color, label, icon } = statusMap[rowData.status] || { color: 'secondary', label: 'Desconhecido', icon: '❓' };
+    return <Tag value={`${icon} ${label}`} severity={color} style={{ fontWeight: 500 }} />;
   };
 
-  // Template para progresso
   const progressBodyTemplate = (rowData) => {
     const progresso = rowData.concluido != null ? (rowData.concluido * 100).toFixed(1) : 0;
     return (
@@ -331,19 +249,48 @@ export default function Home() {
           style={{ height: '8px', flex: 1 }}
           color={progresso === 100 ? '#10b981' : '#6366f1'}
         />
-        <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>
-          {progresso}%
-        </span>
+        <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{progresso}%</span>
       </div>
     );
   };
 
-  // Função para aplicar período personalizado
+  // Funções do Date Picker (SIMPLIFICADAS)
+  const handlePeriodoPersonalizado = () => {
+    setShowDatePicker(true);
+    setTempDataInicio(dataInicio);
+    setTempDataFim(dataFim);
+  };
+
   const aplicarPeriodoPersonalizado = () => {
-    setDataInicio(range[0].startDate);
-    setDataFim(range[0].endDate);
-    setPeriodoSelecionado("custom");
-    setShowRange(false);
+    if (tempDataInicio && tempDataFim) {
+      setDataInicio(tempDataInicio);
+      setDataFim(tempDataFim);
+      setPeriodoSelecionado("custom");
+      console.log('📅 Período aplicado:', { inicio: tempDataInicio, fim: tempDataFim });
+    }
+    setShowDatePicker(false);
+  };
+
+  const cancelarPeriodoPersonalizado = () => {
+    setTempDataInicio(dataInicio);
+    setTempDataFim(dataFim);
+    setShowDatePicker(false);
+  };
+
+  const handlePeriodoChange = (novoPeriodo) => {
+    console.log('📅 Mudando período para:', novoPeriodo);
+    setPeriodoSelecionado(novoPeriodo);
+    if (novoPeriodo !== "custom") {
+      setDataInicio("");
+      setDataFim("");
+    }
+  };
+
+  // Função para formatar data para exibição
+  const formatarDataExibicao = (dataString) => {
+    if (!dataString) return '';
+    const data = new Date(dataString + 'T00:00:00');
+    return data.toLocaleDateString('pt-BR');
   };
 
   // Loading component
@@ -357,7 +304,7 @@ export default function Home() {
     return (
       <div className="home-wrapper">
         <div className="home-header">
-          <h2>Resumo das Campanhas</h2>
+          <h2>📊 Resumo das Campanhas</h2>
           <div className="periodo-filter">
             <div className="loading-shimmer" style={{ width: '200px', height: '40px', borderRadius: '16px' }}></div>
           </div>
@@ -371,61 +318,136 @@ export default function Home() {
 
   return (
     <div className="home-wrapper">
+      {/* HEADER */}
       <div className="home-header">
         <h2>📊 Resumo das Campanhas</h2>
         
-        {/* Filtro de Período Melhorado */}
+        {/* Filtro de Período */}
         <div className="periodo-filter">
           <button 
             className={`periodo-btn ${periodoSelecionado === "today" ? "active" : ""}`} 
-            onClick={() => setPeriodoSelecionado("today")}
+            onClick={() => handlePeriodoChange("today")}
           >
             📅 Hoje
           </button>
           <button 
             className={`periodo-btn ${periodoSelecionado === "7 days" ? "active" : ""}`} 
-            onClick={() => setPeriodoSelecionado("7 days")}
+            onClick={() => handlePeriodoChange("7 days")}
           >
             📊 7 Dias
           </button>
           <button 
             className={`periodo-btn ${periodoSelecionado === "30 days" ? "active" : ""}`} 
-            onClick={() => setPeriodoSelecionado("30 days")}
+            onClick={() => handlePeriodoChange("30 days")}
           >
             📈 30 Dias
           </button>
           <button
             className={`periodo-btn ${periodoSelecionado === "custom" ? "active" : ""}`}
-            onClick={() => setShowRange(true)}
+            onClick={handlePeriodoPersonalizado}
           >
             {periodoSelecionado === "custom" && dataInicio && dataFim
-              ? `🗓️ ${dataInicio.toLocaleDateString('pt-BR')} - ${dataFim.toLocaleDateString('pt-BR')}`
+              ? `🗓️ ${formatarDataExibicao(dataInicio)} - ${formatarDataExibicao(dataFim)}`
               : "🗓️ Personalizado"}
           </button>
+        </div>
 
-          {showRange && (
-            <div className="date-range-popup">
-              <DateRangePicker
-                onChange={(item) => setRange([item.selection])}
-                moveRangeOnFirstSelection={false}
-                ranges={range}
-                months={window.innerWidth > 768 ? 2 : 1}
-                direction={window.innerWidth > 768 ? "horizontal" : "vertical"}
-              />
-              <div className="date-range-actions">
-                <button onClick={() => setShowRange(false)}>
-                  Cancelar
+        {/* Date Picker Modal MELHORADO */}
+        {showDatePicker && (
+          <div className="date-picker-overlay" onClick={cancelarPeriodoPersonalizado}>
+            <div className="date-picker-modal" onClick={(e) => e.stopPropagation()}>
+              <h4>🗓️ Selecionar Período Personalizado</h4>
+              
+              <div className="date-picker-content">
+                <div className="date-input-group">
+                  <label>📅 Data Inicial</label>
+                  <input
+                    type="date"
+                    value={tempDataInicio}
+                    onChange={(e) => setTempDataInicio(e.target.value)}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="date-input"
+                    placeholder="Selecione a data inicial"
+                  />
+                  {tempDataInicio && (
+                    <small style={{ color: '#6366f1', fontSize: '0.8rem', fontWeight: 500 }}>
+                      ✓ {new Date(tempDataInicio + 'T00:00:00').toLocaleDateString('pt-BR', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </small>
+                  )}
+                </div>
+                
+                <div className="date-input-group">
+                  <label>📅 Data Final</label>
+                  <input
+                    type="date"
+                    value={tempDataFim}
+                    onChange={(e) => setTempDataFim(e.target.value)}
+                    min={tempDataInicio}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="date-input"
+                    placeholder="Selecione a data final"
+                    disabled={!tempDataInicio}
+                  />
+                  {tempDataFim && (
+                    <small style={{ color: '#6366f1', fontSize: '0.8rem', fontWeight: 500 }}>
+                      ✓ {new Date(tempDataFim + 'T00:00:00').toLocaleDateString('pt-BR', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </small>
+                  )}
+                </div>
+              </div>
+
+              {/* Preview do período selecionado */}
+              {tempDataInicio && tempDataFim && (
+                <div style={{
+                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
+                  padding: '1rem',
+                  borderRadius: '12px',
+                  marginBottom: '1.5rem',
+                  border: '1px solid rgba(99, 102, 241, 0.2)'
+                }}>
+                  <div style={{ textAlign: 'center', color: '#4f46e5', fontWeight: 600 }}>
+                    📊 Período Selecionado
+                  </div>
+                  <div style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '0.9rem', color: '#6b7280' }}>
+                    {(() => {
+                      const inicio = new Date(tempDataInicio + 'T00:00:00');
+                      const fim = new Date(tempDataFim + 'T00:00:00');
+                      const diffTime = Math.abs(fim - inicio);
+                      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                      return `${diffDays} dia${diffDays > 1 ? 's' : ''} de dados`;
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              <div className="date-picker-actions">
+                <button className="btn-secondary" onClick={cancelarPeriodoPersonalizado}>
+                  ✕ Cancelar
                 </button>
-                <button onClick={aplicarPeriodoPersonalizado}>
-                  Aplicar Período
+                <button 
+                  className="btn-primary" 
+                  onClick={aplicarPeriodoPersonalizado}
+                  disabled={!tempDataInicio || !tempDataFim}
+                >
+                  ✓ Aplicar Período
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
-      {/* Cards Principais Melhorados */}
+      {/* Cards Principais */}
       <div className="dashboard-cards">
         {/* Card Mensagens Enviadas */}
         <Card className="dashboard-card">
@@ -536,7 +558,7 @@ export default function Home() {
         </Card>
       </div>
 
-      {/* Gráfico Principal Melhorado */}
+      {/* Gráfico Principal */}
       <Card className="chart-card-full">
         <div className="chart-header">
           <h3>📊 Mensagens × Receita por Dia</h3>
@@ -552,7 +574,7 @@ export default function Home() {
         </div>
       </Card>
 
-      {/* Tabela de Campanhas Ativas Melhorada */}
+      {/* Tabela de Campanhas Ativas */}
       <Card className="mt-4">
         <div style={{ marginBottom: '1.5rem' }}>
           <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -573,12 +595,7 @@ export default function Home() {
           <Column field="total_mensagem" header="📤 Total" sortable body={(data) => formatarNumero(data.total_mensagem)} />
           <Column field="enviado" header="✅ Enviadas" sortable body={(data) => formatarNumero(data.enviado)} />
           <Column field="erro" header="❌ Erros" sortable body={(data) => formatarNumero(data.erro)} />
-          <Column 
-            header="📈 Progresso" 
-            body={progressBodyTemplate}
-            sortable
-            sortField="concluido"
-          />
+          <Column header="📈 Progresso" body={progressBodyTemplate} sortable sortField="concluido" />
         </DataTable>
       </Card>
 
@@ -606,14 +623,7 @@ export default function Home() {
                   legend: { 
                     display: true, 
                     position: 'bottom',
-                    labels: { 
-                      usePointStyle: true,
-                      padding: 15,
-                      font: {
-                        family: 'Inter',
-                        size: 12
-                      }
-                    }
+                    labels: { usePointStyle: true, padding: 15, font: { family: 'Inter', size: 12 } }
                   },
                   tooltip: {
                     callbacks: {
