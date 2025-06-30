@@ -1,0 +1,389 @@
+/* styles/monitoramento.css */
+.monitoramento-container {
+    padding: 1.5rem;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+/* Header */
+.monitor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.monitor-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: #1e293b;
+}
+
+.monitor-header p {
+    margin: 0.25rem 0 0 0;
+    color: #64748b;
+}
+
+.monitor-header .flex {
+    display: flex;
+}
+
+.monitor-header .gap-2 {
+    gap: 0.5rem;
+}
+
+/* Grid de estatísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card .p-card-body {
+    padding: 0 !important;
+}
+
+.stat-card .p-card-content {
+    padding: 0 !important;
+}
+
+.stat-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.8;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+/* Card de tempo real */
+.realtime-card {
+    margin-bottom: 2rem;
+}
+
+.realtime-card .p-card-body {
+    padding: 1.5rem;
+}
+
+.realtime-card h3 {
+    margin: 0 0 1rem 0;
+    color: #1e293b;
+}
+
+.realtime-stats {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-item .label {
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Tabela de campanhas */
+.campaigns-table-card .p-card-body {
+    padding: 1.5rem;
+}
+
+.campaigns-table-card h3 {
+    margin: 0 0 1.5rem 0;
+    color: #1e293b;
+}
+
+/* DataTable customizations */
+.monitor-table.p-datatable .p-datatable-header {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.monitor-table.p-datatable .p-datatable-tbody > tr {
+    transition: background-color 0.2s;
+}
+
+.monitor-table.p-datatable .p-datatable-tbody > tr:hover {
+    background: #f1f5f9 !important;
+}
+
+.monitor-table .p-column-header-content {
+    font-weight: 600;
+    color: #475569;
+}
+
+/* Progress bar in table */
+.monitor-table .p-progressbar {
+    height: 6px !important;
+    background: #e2e8f0;
+}
+
+.monitor-table .p-progressbar .p-progressbar-value {
+    background: #00D4FF;
+}
+
+/* Badge adjustments */
+.p-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+}
+
+.p-badge.p-badge-info {
+    background: #00D4FF;
+    color: white;
+}
+
+/* Tooltip */
+.health-issues {
+    color: #ef4444;
+    cursor: help;
+    margin-left: 0.5rem;
+}
+
+/* Timeline in dialog */
+.timeline-card {
+    margin-bottom: 0.5rem;
+}
+
+.timeline-card .p-card-body {
+    padding: 0.75rem !important;
+    background: #f8fafc;
+}
+
+.timeline-card .flex {
+    display: flex;
+}
+
+.timeline-card .justify-content-between {
+    justify-content: space-between;
+}
+
+.timeline-card .align-items-center {
+    align-items: center;
+}
+
+.timeline-card .font-bold {
+    font-weight: 600;
+}
+
+.timeline-card .text-sm {
+    font-size: 0.875rem;
+}
+
+.timeline-card .text-500 {
+    color: #64748b;
+}
+
+.timeline-card .text-red-500 {
+    color: #ef4444;
+}
+
+/* Dialog customizations */
+.p-dialog .p-dialog-header {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.p-dialog .p-dialog-content {
+    padding: 1.5rem;
+}
+
+/* TabView in dialog */
+.p-tabview .p-tabview-nav {
+    background: transparent;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    color: #00D4FF;
+    border-color: #00D4FF;
+}
+
+/* Status details */
+.status-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.detail-item strong {
+    color: #475569;
+    min-width: 150px;
+}
+
+.detail-item ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.detail-item .text-orange-500 {
+    color: #f97316;
+}
+
+/* Button customizations */
+.p-button-outlined {
+    background: transparent !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+}
+
+.p-button-outlined:hover {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+.p-button-rounded.p-button-text {
+    color: #64748b;
+}
+
+.p-button-rounded.p-button-text:hover {
+    background: #f1f5f9 !important;
+}
+
+/* Loading spinner */
+.flex.justify-content-center {
+    display: flex;
+    justify-content: center;
+}
+
+.p-5 {
+    padding: 3rem;
+}
+
+/* Utility classes */
+.ml-2 {
+    margin-left: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .monitor-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .monitor-header > div:last-child {
+        width: 100%;
+    }
+    
+    .monitor-header .flex {
+        justify-content: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .realtime-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .p-dialog {
+        width: 95vw !important;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+    }
+    
+    .detail-item strong {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animações */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.running-indicator {
+    animation: pulse 2s infinite;
+}
+
+/* Fix para conflitos com PrimeReact */
+.monitoramento-container .p-card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 12px;
+}
+
+.monitoramento-container .p-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+/* Chart container */
+.p-chart {
+    position: relative;
+}
+
+/* Scrollbar personalizada */
+.p-datatable-scrollable .p-datatable-scrollable-body::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.p-datatable-scrollable .p-datatable-scrollable-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.p-datatable-scrollable .p-datatable-scrollable-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.p-datatable-scrollable .p-datatable-scrollable-body::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

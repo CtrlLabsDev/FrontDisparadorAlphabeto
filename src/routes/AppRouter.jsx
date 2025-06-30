@@ -17,7 +17,8 @@ import PrivateRoute from "../pages/PrivateRoute";
 import Inbox from "../pages/Inbox"; 
 import Analytics from "../pages/Analytics";
 import AnalyticsDados from "../pages/AnalyticsDados";
-import BlacklistPage from "../pages/BlacklistPage"; // 👈 nova importação
+import BlacklistPage from "../pages/BlacklistPage";
+import Monitoramento from "../pages/Monitoramento"; // ✅ nova importação
 
 export default function AppRouter() {
   return (
@@ -49,7 +50,8 @@ export default function AppRouter() {
         <Route path="inbox" element={<Inbox />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="analytics/dados" element={<AnalyticsDados />} />
-        <Route path="blacklist" element={<BlacklistPage />} /> {/* ✅ nova rota */}
+        <Route path="blacklist" element={<BlacklistPage />} />
+        <Route path="monitoramento" element={<Monitoramento />} /> {/* ✅ nova rota */}
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />

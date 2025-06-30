@@ -10,13 +10,14 @@ export default function MenuLateral() {
   const [isMobile, setIsMobile] = useState(false);
 
   // Menu items
-  const menu = [
-    { label: "Home", icon: "pi pi-home", to: "/" },
-    { label: "Campanhas", icon: "pi pi-send", to: "/campanhas" },
-    { label: "Analytics", icon: "pi pi-chart-line", to: "/analytics" },
-    { label: "BlackList", icon: "pi pi-inbox", to: "/blacklist" },
-    { label: "Configurações", icon: "pi pi-cog", to: "/configuracao" },
-  ];
+const menu = [
+  { label: "Home", icon: "pi pi-home", to: "/" },
+  { label: "Campanhas", icon: "pi pi-send", to: "/campanhas" },
+  { label: "Analytics", icon: "pi pi-chart-line", to: "/analytics" },
+  { label: "BlackList", icon: "pi pi-inbox", to: "/blacklist" },
+  { label: "Monitoramento", icon: "pi pi-compass", to: "/monitoramento" }, // ← ADICIONADO AQUI
+  { label: "Configurações", icon: "pi pi-cog", to: "/configuracao" },
+];
 
   // Detectar mudanças no tamanho da tela
   useEffect(() => {
