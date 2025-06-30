@@ -87,23 +87,44 @@ export default function Campanhas() {
         }
     };
 
-    // ✅ Buscar status das campanhas em cache
-    const buscarStatusCampanhas = async () => {
-        try {
-            const res = await api.get('status-campanhas/');
-            const statusMap = {};
+// ✅ Buscar status das campanhas em cache
+const buscarStatusCampanhas = async () => {
+    try {
+        const res = await api.get('status-campanhas/');
+        const statusMap = {};
+        
+        // A resposta tem um formato diferente, vamos ajustar
+        if (res.data.campanhas && Array.isArray(res.data.campanhas)) {
+            // Se a resposta tem um campo 'campanhas' que é um array
+            res.data.campanhas.forEach(item => {
+                statusMap[item.campanha_id] = {
+                    is_running: item.status_cache?.running || false,
+                    is_paused: item.status_cache?.paused || false,
+                    status_db: item.status_db,
+                    heartbeat_count: item.status_cache?.heartbeat_count || 0,
+                    uptime: item.status_cache?.uptime || 'N/A'
+                };
+            });
+        } else if (Array.isArray(res.data)) {
+            // Se a resposta é diretamente um array
             res.data.forEach(item => {
                 statusMap[item.campanha_id] = {
                     is_running: item.status_cache?.running || false,
                     is_paused: item.status_cache?.paused || false,
-                    status_db: item.status_db
+                    status_db: item.status_db,
+                    heartbeat_count: item.status_cache?.heartbeat_count || 0,
+                    uptime: item.status_cache?.uptime || 'N/A'
                 };
             });
-            setStatusCampanhas(statusMap);
-        } catch (err) {
-            console.error('Erro ao buscar status das campanhas:', err);
+        } else {
+            console.warn('Formato inesperado de resposta:', res.data);
         }
-    };
+        
+        setStatusCampanhas(statusMap);
+    } catch (err) {
+        console.error('Erro ao buscar status das campanhas:', err);
+    }
+};
 
     useEffect(() => {
         buscarCampanhas();

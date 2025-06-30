@@ -12,7 +12,6 @@ import { Tag } from "primereact/tag";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 
-
 export default function Analytics() {
   const [analyticsData, setAnalyticsData] = useState({
     campanhas: 0,
@@ -29,40 +28,41 @@ export default function Analytics() {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [campanhasDetalhadas, setCampanhasDetalhadas] = useState([]);
+
   const formatarData = (dataString) => {
     const data = new Date(dataString);
     if (isNaN(data)) return "";
     return new Intl.DateTimeFormat("pt-BR").format(data);
   };
-  
 
+useEffect(() => {
+  api.get("/lista-campanhas/")
+    .then(res => {
+      const data = res.data;
 
+      if (!Array.isArray(data.campanhas)) {
+        throw new Error("Resposta inesperada: lista de campanhas não encontrada.");
+      }
 
-  // Carregar lista de campanhas e pré-selecionar campanhas em execução
-  useEffect(() => {
-    api.get("/lista-campanhas/")
-      .then(res => {
-        const lista = res.data.map(c => ({
-          label: `${formatarData(c.data_criacao)} - ${c.nome}`,
-          value: c.id,
-          status: c.status,
-        }));
-        setCampanhas(lista);
+      const lista = data.campanhas.map(c => ({
+        label: `${formatarData(c.data_criacao)} - ${c.nome}`,
+        value: c.id,
+        status: c.status_db,  // corrigido aqui também
+      }));
+      setCampanhas(lista);
 
-        // Seleciona apenas os IDs das campanhas em execução
-        const campanhasIds = lista
-          .filter(c => c.status === "emexecucao")
-          .map(c => c.value);
+      const campanhasIds = lista
+        .filter(c => c.status === "emexecucao")
+        .map(c => c.value);
 
-        setCampanhasSelecionadas(campanhasIds);
-        carregarDadosAnalytics(campanhasIds);
-      })
-      .catch(error => {
-        console.error("Erro ao carregar campanhas:", error);
-        setIsLoading(false);
-      });
-  }, []);
-
+      setCampanhasSelecionadas(campanhasIds);
+      carregarDadosAnalytics(campanhasIds);
+    })
+    .catch(error => {
+      console.error("Erro ao carregar campanhas:", error);
+      setIsLoading(false);
+    });
+}, []);
 
   useEffect(() => {
     if (campanhasSelecionadas.length > 0) {
@@ -72,9 +72,7 @@ export default function Analytics() {
         .catch(err => console.error("Erro ao carregar campanhas detalhadas:", err));
     }
   }, [campanhasSelecionadas]);
-  
 
-  // Função para carregar dados de analytics
   const carregarDadosAnalytics = (selectedIds) => {
     let campanhaParams = "";
     if (selectedIds.length > 0) {
@@ -122,19 +120,16 @@ export default function Analytics() {
     receita_influenciavel: "Receita influenciada por campanhas.",
   };
 
-   
-   const statusBodyTemplate = (rowData) => {
-       const statusMap = {
-           agendada: { color: 'info', label: 'Agendada' },
-           pausada: { color: 'secondary', label: 'Pausada' },
-           emexecucao: { color: 'warning', label: 'Em Execução' },
-           finalizada: { color: 'success', label: 'Finalizada' },
-       };
-       const { color, label } = statusMap[rowData.status] || { color: 'secondary', label: 'Desconhecido' };
-       return <Tag value={label} severity={color} />;
-     };
-   
-   
+  const statusBodyTemplate = (rowData) => {
+    const statusMap = {
+      agendada: { color: 'info', label: 'Agendada' },
+      pausada: { color: 'secondary', label: 'Pausada' },
+      emexecucao: { color: 'warning', label: 'Em Execução' },
+      finalizada: { color: 'success', label: 'Finalizada' },
+    };
+    const { color, label } = statusMap[rowData.status] || { color: 'secondary', label: 'Desconhecido' };
+    return <Tag value={label} severity={color} />;
+  };
 
   if (isLoading) {
     return <div className="loading-container">Carregando dados...</div>;
@@ -192,42 +187,38 @@ export default function Analytics() {
         ))}
       </div>
 
-
-        {/* Tabela com as Campanhas ativas */}
-            <Card className="mt-4">
-                <h3>Campanhas Ativas</h3>
-                <DataTable value={campanhasDetalhadas} paginator rows={5} responsiveLayout="scroll">
-                    <Column field="campanha" header="Campanha" />
-                    <Column field="status" header="Status" body={statusBodyTemplate} />
-                    {/* <Column field="total_mensagem" header="Total Mensagens" /> */}
-                    {/* <Column field="enviado" header="Enviadas" /> */}
-                    {/* <Column field="erro" header="Erros" /> */}
-                    <Column 
-                    header="Concluído" 
-                    body={(rowData) => (
-                        <ProgressBar 
-                            value={rowData.concluido != null ? (rowData.concluido * 100).toFixed(2) : 0} 
-                            showValue 
-                            style={{ height: '20px' }}
-                        />
-                        )}
-                    />
-                    <Column 
-                        header="Detalhes"
-                        body={(rowData) => (
-                            <div className="flex gap-2">
-                                <Button icon="pi pi-send" className="p-button-rounded p-button-primary"  onClick={() => {
-                                    localStorage.setItem("campanhaId", rowData.id);
-                                    navigate("/analytics/dados");
-                                }}
-                            />
-                        </div>
-                    )}
-                    />
-                </DataTable>
-            </Card>
-
-
+      <Card className="mt-4">
+        <h3>Campanhas Ativas</h3>
+        <DataTable value={campanhasDetalhadas} paginator rows={5} responsiveLayout="scroll">
+          <Column field="campanha" header="Campanha" />
+          <Column field="status" header="Status" body={statusBodyTemplate} />
+          <Column 
+            header="Concluído" 
+            body={(rowData) => (
+              <ProgressBar 
+                value={rowData.concluido != null ? (rowData.concluido * 100).toFixed(2) : 0} 
+                showValue 
+                style={{ height: '20px' }}
+              />
+            )}
+          />
+          <Column 
+            header="Detalhes"
+            body={(rowData) => (
+              <div className="flex gap-2">
+                <Button 
+                  icon="pi pi-send" 
+                  className="p-button-rounded p-button-primary"  
+                  onClick={() => {
+                    localStorage.setItem("campanhaId", rowData.id);
+                    navigate("/analytics/dados");
+                  }}
+                />
+              </div>
+            )}
+          />
+        </DataTable>
+      </Card>
     </div>
   );
 }
